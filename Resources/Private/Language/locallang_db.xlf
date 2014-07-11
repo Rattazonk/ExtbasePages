@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-07-11T21:27:39Z" product-name="extbasepages">
+		<header/>
+		<body>
+			<trans-unit id="tx_extbasepages_domain_model_page">
+				<source>Page</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
