@@ -1,5 +1,5 @@
 <?php
-namespace Rattazonk\Extbasepages\Domain\Repository;
+namespace Rattazonk\Extbasepages\ViewHelpers;
 
 
 /***************************************************************
@@ -27,15 +27,41 @@ namespace Rattazonk\Extbasepages\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * The repository for Pages
- */
-class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
+class RenderSubLevelViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
-	public function initializeObject() {
-		$defaultQuerySettings = $this->objectManager->get('TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings');
-		$defaultQuerySettings->setRespectStoragePage(FALSE);
-		$this->setDefaultQuerySettings($defaultQuerySettings);
+	
+	/**
+	 * @var RenderTreeViewHelper
+	 */
+	protected $renderTreeViewHelper;
+
+	/**
+	 * @param mixed $tree
+	* @return string the rendered string
+	**/
+	public function render($tree) {
+		$elements = $this->initSubTreeElements( $tree );
+		if(count($elements) > 0) {
+			return $this->renderTreeViewHelper->renderLevel( $elements );
+		} else {
+			return '';
+		}
 	}
 
+	protected function initSubTreeElements( $tree ) {
+		if( method_exists($tree, 'getChildren') ) {
+			return $tree->getChildren();
+		} else {
+			return $tree;
+		}
+	}
+
+	/**
+	 * @param RenderTreeViewHelper
+	 * @return void
+	 */
+	public function setRenderTreeViewHelper( $renderTreeViewHelper ) {
+		$this->renderTreeViewHelper = $renderTreeViewHelper;
+	}
+		
 }

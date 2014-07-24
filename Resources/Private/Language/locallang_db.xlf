@@ -6,6 +6,9 @@
 			<trans-unit id="tx_extbasepages_domain_model_page">
 				<source>Page</source>
 			</trans-unit>
+			<trans-unit id="tx_extbasepages_domain_model_page.sub_pages">
+				<source>Subpages</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

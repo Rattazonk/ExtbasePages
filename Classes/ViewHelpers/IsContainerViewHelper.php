@@ -1,5 +1,5 @@
 <?php
-namespace Rattazonk\Extbasepages\Domain\Repository;
+namespace Rattazonk\Extbasepages\ViewHelpers;
 
 
 /***************************************************************
@@ -27,15 +27,13 @@ namespace Rattazonk\Extbasepages\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * The repository for Pages
- */
-class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
+class IsContainerViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
-	public function initializeObject() {
-		$defaultQuerySettings = $this->objectManager->get('TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings');
-		$defaultQuerySettings->setRespectStoragePage(FALSE);
-		$this->setDefaultQuerySettings($defaultQuerySettings);
-	}
-
+	 /**
+		* @param object $test
+		* @return boolean
+		**/
+		public function render( $test ) {
+			return method_exists($test, 'isContainer') && $test->isContainer();
+		}
 }

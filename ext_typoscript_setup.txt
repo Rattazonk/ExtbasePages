@@ -1,0 +1,15 @@
+config.tx_extbase{
+    persistence{
+        classes{
+            Rattazonk\Extbasepages\Domain\Model\Page {
+                mapping {
+                    tableName = pages					
+					columns {
+						pid.mapOnProperty = parent
+					}
+                }
+            }
+            
+    	}
+    }
+}

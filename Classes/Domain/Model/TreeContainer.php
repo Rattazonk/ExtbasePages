@@ -28,67 +28,44 @@ namespace Rattazonk\Extbasepages\Domain\Model;
  ***************************************************************/
 
 /**
- * Page
+ * TreeContainer
+ * to replace tree nodes which arent allowed - e.g. with the wrong doktype
  */
-class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class TreeContainer {
 
-	/**
-	 * @var Rattazonk\Extbasepages\Domain\Model\Page
-	 * @lazy
-	 **/
-	protected $parent;
-	
-	/** @var TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page> **/
-	protected $subPages;
-
-	/** @var string **/
-	protected $title;
-	
-	/** @var string **/
-	protected $doktype;
-	
-
-	/**
-	 * @return TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page
-	 */
-	public function getSubPages() {
-		return $this->subPages;
-	}
-
-	/**
-	 * @param TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page>
-	 */
-	public function setSubPages( $subPages ) {
-		$this->subPages = $subPages;
-	}
+	/** @var TYPO3\CMS\Extbase\Persistence\ObjectStorage **/
+	protected $children;
 
 	/**
 	 * @api
-	 * @return TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page>
+	 * @return TYPO3\CMS\Extbase\Persistence\ObjectStorage
 	 */
 	public function getChildren() {
-		return $this->getSubPages();
+		return $this->children;
 	}
 
 	/**
 	 * @api
-	 * @param TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page>
+	 * @param TYPO3\CMS\Extbase\Persistence\ObjectStorage
 	 */
 	public function setChildren( $children ) {
-		return $this->setSubPages( $children );
+		$this->children = $children;
 	}
 
 	/**
-	 * @return string
+	 * @api
+	 * @return TRUE
 	 */
-	public function getTitle() {
-		return $this->title;
+	public function isContainer() {
+		return TRUE;
 	}
 
 	/**
-	 * @return string
+	 * for fluid
+	 * @api
 	 */
-	public function getDoktype() {
-		return $this->doktype;
+	public function getIsContainer() {
+		return $this->isContainer();
 	}
+
 }
