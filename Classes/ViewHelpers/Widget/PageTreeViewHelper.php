@@ -14,6 +14,7 @@ class PageTreeViewHelper extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetView
 	 * @param mixed $onlyDoktype
 	 * @param mixed $excludeDoktype
 	 * @param boolean $renderChildrenOfSkipped
+	 * @param boolean $excludeDoktypesOver199
 	 * @return string
 	 */
 	public function render(
@@ -21,7 +22,8 @@ class PageTreeViewHelper extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetView
 		$underPid = NULL, 
 		$onlyDoktype = array(), 
 		$excludeDoktype = array(),
-		$renderChildrenOfSkipped = FALSE
+		$renderChildrenOfSkipped = FALSE,
+		$excludeDoktypesOver199 = TRUE
 	) {
 		return $this->initiateSubRequest();
 	}

@@ -53,6 +53,10 @@ class PageTreeController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
 	}
 
 	protected function filterDoktype( $tree ) {
+		if( $this->widgetConfiguration['excludeDoktypesOver199'] ) {
+			$tree = $this->excludeDoktypesOver199( $tree );
+		}
+
 		if( !empty($this->widgetConfiguration['onlyDoktype']) ) {
 			$tree = $this->onlyDoktype( $tree );
 		}
@@ -62,6 +66,18 @@ class PageTreeController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
 		}
 
 		return $tree;
+	}
+
+	protected function excludeDoktypesOver199( $tree ) {
+		$filtered = array();
+		foreach( $tree as $element ) {
+			if( $element->getDoktype() < 200 ) {
+				$filteredChildren = $this->excludeDoktypesOver199( $element->getChildren() );
+				$element->setChildren( $filteredChildren );
+				$filtered[] = $element;
+			}
+		}
+		return $filtered;
 	}
 
 	protected function onlyDoktype( $tree ) {
