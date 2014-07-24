@@ -1,15 +1,17 @@
 config.tx_extbase{
-    persistence{
-        classes{
-            Rattazonk\Extbasepages\Domain\Model\Page {
-                mapping {
-                    tableName = pages					
+	persistence{
+		classes{
+			Rattazonk\Extbasepages\Domain\Model\Page {
+				mapping {
+					tableName = pages					
 					columns {
 						pid.mapOnProperty = parent
+						subtitle.mapOnProperty = subTitle
+						starttime.mapOnProperty = startTime
+						crdate.mapOnProperty = creationDate
 					}
-                }
-            }
-            
-    	}
-    }
+				}
+			}
+		}
+	}
 }

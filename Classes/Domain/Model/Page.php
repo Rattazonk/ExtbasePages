@@ -43,9 +43,21 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/** @var string **/
 	protected $title;
+
+	/** @var string **/
+	protected $subTitle;
 	
 	/** @var string **/
 	protected $doktype;
+
+	/** @var int  **/
+	protected $startTime;
+
+	/** @var int  **/
+	protected $creationDate;
+
+	/** @var DateTime **/
+	protected $test;
 	
 
 	/**
@@ -79,6 +91,14 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @param string
+	 * @return void
+	 */
+	public function setTitle( $title ) {
+		$this->title = $title;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getTitle() {
@@ -86,9 +106,66 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @param string
+	 * @return void
+	 */
+	public function setSubTitle( $subTitle ) {
+		$this->subTitle = $subTitle;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSubTitle() {
+		return $this->subTitle;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function setDoktype( $doktype ) {
+		$this->doktype = $doktype;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getDoktype() {
 		return $this->doktype;
+	}
+
+	/**
+	 * @param DateTime
+	 * @return void
+	 */
+	public function setStartTime( $startTime ) {
+		$this->startTime = $startTime->getTimestamp();
+	}
+
+	/**
+	 * @return DateTime
+	 */
+	public function getStartTime() {
+		if( $this->startTime === 0 ) {
+			$startTime = NULL;
+		} else {
+			$startTime = new \DateTime( date('c', $this->startTime) );
+		}
+		return $startTime;
+	}
+
+	/**
+	 * @param DateTime
+	 * @return void
+	 */
+	public function setCreationDate( $creationDate ) {
+		$this->creationDate = $creationDate->getTimestamp();
+	}
+
+	/**
+	 * @return DateTime
+	 */
+	public function getCreationDate() {
+		return new \DateTime( date('c', $this->creationDate) );
 	}
 }
