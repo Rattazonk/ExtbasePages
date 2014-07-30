@@ -58,20 +58,16 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/** @var DateTime **/
 	protected $test;
-	
-
-	/**
-	 * @return TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page
-	 */
-	public function getSubPages() {
-		return $this->subPages;
-	}
 
 	/**
 	 * @param TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page>
 	 */
 	public function setSubPages( $subPages ) {
 		$this->subPages = $subPages;
+	}
+
+	public function getSubPages() {
+		return $this->subPages;
 	}
 
 	/**
@@ -139,7 +135,11 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setStartTime( $startTime ) {
-		$this->startTime = $startTime->getTimestamp();
+		if( $startTime INSTANCEOF \DateTime ) {
+			$this->startTime = $startTime->getTimestamp();
+		} else {
+			$this->startTime = $startTime;
+		}
 	}
 
 	/**
