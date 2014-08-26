@@ -20,3 +20,21 @@ $GLOBALS['TCA']['pages']['columns']['sub_pages'] = array(
 		),
 	)
 );
+
+$GLOBALS['TCA']['pages']['columns']['content'] = array(
+	'exclude' => 0,
+	'label' => 'LLL:EXT:extbasepages/Resources/Private/Language/locallang_db.xlf:tx_extbasepages_domain_model_page.content',
+	'config' => array(
+		'type' => 'inline',
+		'foreign_table' => 'tt_content',
+		'foreign_field' => 'pid',
+		'maxitems'      => 9999,
+		'appearance' => array(
+			'collapseAll' => 1,
+			'levelLinksPosition' => 'top',
+			'showSynchronizationLink' => 1,
+			'showPossibleLocalizationRecords' => 1,
+			'showAllLocalizationLink' => 1
+		),
+	)
+);

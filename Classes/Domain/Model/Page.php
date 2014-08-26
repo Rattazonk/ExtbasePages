@@ -41,6 +41,12 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/** @var TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page> **/
 	protected $subPages;
 
+	/**
+	 * @var TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Content>
+	 * @lazy
+	 **/
+	protected $content;
+
 	/** @var string **/
 	protected $title;
 
@@ -68,6 +74,32 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	public function getSubPages() {
 		return $this->subPages;
+	}
+
+	/**
+	 * @param TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Content>
+	 */
+	public function setContent( $content ) {
+		$this->content = $content;
+	}
+
+	/**
+	 * @return TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Content>
+	 */
+	public function getContent() {
+		return $this->content;
+	}
+
+	public function getFirstContent() {
+		$content = $this->getContent();
+		if( $content INSTANCEOF \TYPO3\CMS\Extbase\Persistence\ObjectStorage ) {
+			$content->rewind();
+			return $content->current();
+		} else if ( is_array( $content ) ) {
+			return arra_shift( array_values( $content ) );
+		} else {
+			return NULL;
+		}
 	}
 
 	/**

@@ -12,6 +12,16 @@ config.tx_extbase{
 					}
 				}
 			}
+			Rattazonk\Extbasepages\Domain\Model\Content {
+				mapping {
+					tableName = tt_content					
+					columns {
+						pid.mapOnProperty = page
+						ctype.mapOnProperty = type
+						bodytext.mapOnProperty = bodyText
+					}
+				}
+			}
 		}
 	}
 }

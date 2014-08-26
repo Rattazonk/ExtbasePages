@@ -48,19 +48,53 @@ class TreeWrapper {
 		$this->wrappedObject = $wrappedObject;
 	}
 
-	/**
-	 * @api
-	 */
 	public function getChildren() {
-		return $this->__call('getChildren', array());
+		if( $this->treeWrapperIsCleared() ) {
+			// allow overriding the children, because a cleared element can have children
+			if( isset($this->overridenAttributes['children'])
+				&& is_array($this->overridenAttributes['children'])) {
+				return $this->overridenAttributes['children'];
+			} else {
+				return array();
+			}
+		} else {
+			return $this->__call('getChildren', array());
+		}
+	}
+
+	public function setChildren($children) {
+		if( $this->treeWrapperIsCleared() ) {
+			$this->overridenAttributes['children'] = $children;
+		} else {
+			return $this->__call('getChildren', func_get_args());
+		}
+	}
+
+	/**
+	 * the name is not only clear to reduce conflicts with the wrapped object
+	 */
+	public function clearTreeWrapper() {
+		$this->wrappedObject = NULL;
+		$this->overridenAttributes = array();
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function treeWrapperIsCleared() {
+		return $this->wrappedObject === NULL;
 	}
 
 	public function __call($methodName, $args) {
+		if( $this->treeWrapperIsCleared() ) {
+			return NULL;
+		}
+
 		$methodType = substr($methodName, 0, 3);
 		$attributeName = lcfirst(substr($methodName, 3));
 
 		if( $methodType == 'set' ) {
-			$this->overridenAttributes[$attributeName] = array_shift(array_values($args));
+			$this->overridenAttributes[$attributeName] = array_shift($args);
 		} else if( $methodType == 'get' && array_key_exists($attributeName, $this->overridenAttributes) ) {
 			return $this->overridenAttributes[$attributeName];
 		} else {

@@ -1,12 +1,16 @@
 <?php
 namespace Rattazonk\Extbasepages\ViewHelpers\Widget\Controller;
 
+use Rattazonk\Extbasepages\Utility\PageTree\Filter\AbstractFilter as AbstractTreeFilter;
+
 class PageTreeController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController {
 
 	/** @var int **/
 	protected $startPid = 0;
 	/** @var string **/
 	protected $treeName;
+	/** @var array **/
+	protected $treeFilters = array();
 
 	/**
 	 * @var Rattazonk\Extbasepages\Domain\Repository\PageRepository
@@ -30,8 +34,40 @@ class PageTreeController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
 	protected function getTree() {
 		$tree = $this->pageRepository->findByParent( $this->startPid );
 		$tree = $this->initWrappers( $tree );
-		$tree = $this->filterDoktype( $tree );
+		$tree = $this->filterTree( $tree );
+
 		return $tree;
+	}
+
+	protected function filterTree( $tree, $init = TRUE ) {
+		if( $init ) {
+			$this->initTreeFilters();
+		}
+
+		foreach( $tree as $element ) {
+			foreach( $this->treeFilters as $filter ){
+				$filter->filter( $element );
+
+				if(	$this->widgetConfiguration['renderChildrenOfSkipped']
+					|| !$element->treeWrapperIsCleared() ) {
+
+					$element->setChildren( 
+						$this->filterTree( $element->getChildren(), FALSE )
+					);
+				}
+
+				if( $element->treeWrapperIsCleared() ) {
+					break;
+				}
+			}
+		}
+
+		return $tree;
+	}
+
+	protected function initTreeFilters() {
+		// should call addTreeFilter, if it is responsible
+		$this->signalSlotDispatcher->dispatch(__CLASS__, __FUNCTION__, array($this));
 	}
 
 	protected function initWrappers( $tree ) {
@@ -40,8 +76,7 @@ class PageTreeController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
 		foreach( $tree as $element ) {
 			$wrappedElement = $this->objectManager->get('Rattazonk\Extbasepages\Domain\Model\TreeWrapper', $element);
 			$wrappedChildren = $this->initWrappers(
-				$element->getChildren(),
-				$level + 1
+				$element->getChildren()
 			);
 
 			$wrappedElement->setChildren( $wrappedChildren );
@@ -52,62 +87,28 @@ class PageTreeController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
 		return $wrappedTree;
 	}
 
-	protected function filterDoktype( $tree ) {
-		if( $this->widgetConfiguration['excludeDoktypesOver199'] ) {
-			$tree = $this->excludeDoktypesOver199( $tree );
-		}
-
-		if( !empty($this->widgetConfiguration['onlyDoktype']) ) {
-			$tree = $this->onlyDoktype( $tree );
-		}
-
-		if( !empty($this->widgetConfiguration['excludeDoktype']) ) {
-			$tree = $this->excludeDoktype( $tree );
-		}
-
-		return $tree;
+	public function getWidgetConfiguration() {
+		return $this->widgetConfiguration;
 	}
 
-	protected function excludeDoktypesOver199( $tree ) {
-		$filtered = array();
-		foreach( $tree as $element ) {
-			if( $element->getDoktype() < 200 ) {
-				$filteredChildren = $this->excludeDoktypesOver199( $element->getChildren() );
-				$element->setChildren( $filteredChildren );
-				$filtered[] = $element;
-			}
-		}
-		return $filtered;
+	/**
+	 * @param Rattazonk\Extbasepages\Utility\PageTree\Filter\AbstractFilter $treeFilter
+	 * @return void
+	 */
+	public function addTreeFilter(AbstractTreeFilter $treeFilter) {
+		$this->treeFilters[] = $treeFilter;
 	}
 
-	protected function onlyDoktype( $tree ) {
-		$filtered = array();
+	protected function debug( $tree ) {
+		echo '<div style="padding-left: 20px">';
 		foreach( $tree as $element ) {
-			if( in_array($element->getDoktype(), $this->widgetConfiguration['onlyDoktype']) ) {
-				$filteredChildren = $this->onlyDoktype( $element->getChildren() );
-				$element->setChildren( $filteredChildren );
-				$filtered[] = $element;
-			}
-		}
-		return $filtered;
-	}
+			echo get_class( $element );
+			echo '::' . $element->getUid();
+			echo '<br>children:<hr>';
 
-	protected function excludeDoktype( $tree ) {
-		$filtered = array();
-
-		foreach( $tree as $element ) {
-			if( !in_array($element->getDoktype(), $this->widgetConfiguration['excludeDoktype']) ) {
-				$filteredChildren = $this->excludeDoktype( $element->getChildren() );
-				$element->setChildren( $filteredChildren );
-				$filtered[] = $element;
-			} else if ( $this->widgetConfiguration['renderChildrenOfSkipped'] ) {
-				$container = $this->objectManager->get('Rattazonk\Extbasepages\Domain\Model\TreeContainer');
-				$filteredChildren = $this->excludeDoktype( $element->getChildren() );
-				$container->setChildren( $filteredChildren );
-				$filtered[] = $container;
-			}
+			$this->debug( $element->getChildren() );
 		}
-		return $filtered;
+		echo '</div>';
 	}
 }
 ?>
