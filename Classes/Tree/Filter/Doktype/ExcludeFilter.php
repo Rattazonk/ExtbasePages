@@ -1,6 +1,8 @@
 <?php
-namespace Rattazonk\Extbasepages\ViewHelpers;
+namespace Rattazonk\Extbasepages\Tree\Filter\Doktype;
 
+use \Rattazonk\Extbasepages\Tree\ElementWrapper;
+use \Rattazonk\Extbasepages\Tree\Filter\AbstractFilter;
 
 /***************************************************************
  *
@@ -27,16 +29,20 @@ namespace Rattazonk\Extbasepages\ViewHelpers;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class LevelViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class ExcludeFilter extends AbstractFilter {
+	/**
+	 * @return boolean
+	 */
+	protected function isResponsible() {
+		return isset($this->widgetConfiguration['excludeDoktype'])
+			&& !empty($this->widgetConfiguration['excludeDoktype']);
+	}
 
-	 /**
-		* @param int $lowerThan
-		* @param int $greaterThen
-		* @param boolean $orEqual
-		* @param string $subMenu
-		* @return string the rendered string
-		**/
-		public function render($greaterThan = NULL, $lowerThan = NULL, $orEqual = FALSE, $subMenu = 'sub') {
-			return $this->renderChildren();
-		}
+	/**
+	 * @param Rattazonk\Extbasepages\Tree\ElementWrapper $element
+	 * @return boolean
+	 */
+	protected function elementIsAllowed( ElementWrapper $element ) {
+		return !in_array($element->getDoktype(), $this->widgetConfiguration['excludeDoktype']);
+	}
 }

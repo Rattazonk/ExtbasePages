@@ -1,7 +1,7 @@
 <?php
-namespace Rattazonk\Extbasepages\Utility\PageTree\Filter;
+namespace Rattazonk\Extbasepages\Tree\Filter;
 
-use \Rattazonk\Extbasepages\Domain\Model\TreeWrapper;
+use \Rattazonk\Extbasepages\Tree\ElementWrapper;
 use \Rattazonk\Extbasepages\ViewHelpers\Widget\Controller\PageTreeController;
 
 /***************************************************************
@@ -50,12 +50,12 @@ abstract class AbstractFilter {
 	}
 
 	/**
-	 * @param Rattazonk\Extbasepages\Domain\Model\TreeWrapper $element
+	 * @param Rattazonk\Extbasepages\Tree\ElementWrapper $element
 	 * @return void
 	 */
-	public function filter( TreeWrapper $element ) {
+	public function filter( ElementWrapper $element ) {
 		if( !$this->elementIsAllowed($element) ) {
-			$element->clearTreeWrapper();
+			$element->hideWrappedElement();
 		}
 	}
 
@@ -65,8 +65,8 @@ abstract class AbstractFilter {
 	abstract protected function isResponsible();
 
 	/**
-	 * @param Rattazonk\Extbasepages\Domain\Model\TreeWrapper $element
+	 * @param Rattazonk\Extbasepages\Tree\ElementWrapper $element
 	 * @return boolean
 	 */
-	abstract protected function elementIsAllowed( TreeWrapper $element );
+	abstract protected function elementIsAllowed( ElementWrapper $element );
 }

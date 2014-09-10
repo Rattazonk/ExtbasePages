@@ -1,7 +1,8 @@
 <?php
-namespace Rattazonk\Extbasepages\Utility\PageTree\Filter\Doktype;
+namespace Rattazonk\Extbasepages\Tree\Filter\Doktype;
 
-use \Rattazonk\Extbasepages\Domain\Model\TreeWrapper;
+use \Rattazonk\Extbasepages\Tree\ElementWrapper;
+use \Rattazonk\Extbasepages\Tree\Filter\AbstractFilter;
 
 /***************************************************************
  *
@@ -28,20 +29,20 @@ use \Rattazonk\Extbasepages\Domain\Model\TreeWrapper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class ExcludeFilter extends \Rattazonk\Extbasepages\Utility\PageTree\Filter\AbstractFilter {
+class OnlyFilter extends AbstractFilter {
 	/**
 	 * @return boolean
 	 */
 	protected function isResponsible() {
-		return isset($this->widgetConfiguration['excludeDoktype'])
-			&& !empty($this->widgetConfiguration['excludeDoktype']);
+		return isset($this->widgetConfiguration['onlyDoktype'])
+			&& !empty($this->widgetConfiguration['onlyDoktype']);
 	}
 
 	/**
-	 * @param Rattazonk\Extbasepages\Domain\Model\TreeWrapper $element
+	 * @param Rattazonk\Extbasepages\Tree\ElementWrapper $element
 	 * @return boolean
 	 */
-	protected function elementIsAllowed( TreeWrapper $element ) {
-		return !in_array($element->getDoktype(), $this->widgetConfiguration['excludeDoktype']);
+	protected function elementIsAllowed( ElementWrapper $element ) {
+		return in_array($element->getDoktype(), $this->widgetConfiguration['onlyDoktype']);
 	}
 }

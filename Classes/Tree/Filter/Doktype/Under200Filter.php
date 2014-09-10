@@ -1,6 +1,8 @@
 <?php
-namespace Rattazonk\Extbasepages\Domain\Model;
+namespace Rattazonk\Extbasepages\Tree\Filter\Doktype;
 
+use \Rattazonk\Extbasepages\Tree\ElementWrapper;
+use \Rattazonk\Extbasepages\Tree\Filter\AbstractFilter;
 
 /***************************************************************
  *
@@ -27,45 +29,20 @@ namespace Rattazonk\Extbasepages\Domain\Model;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * TreeContainer
- * to replace tree nodes which arent allowed - e.g. with the wrong doktype
- */
-class TreeContainer {
-
-	/** @var TYPO3\CMS\Extbase\Persistence\ObjectStorage **/
-	protected $children;
-
+class Under200Filter extends AbstractFilter {
 	/**
-	 * @api
-	 * @return TYPO3\CMS\Extbase\Persistence\ObjectStorage
+	 * @return boolean
 	 */
-	public function getChildren() {
-		return $this->children;
+	protected function isResponsible() {
+		return isset($this->widgetConfiguration['excludeDoktypesOver199'])
+			&& $this->widgetConfiguration['excludeDoktypesOver199'];
 	}
 
 	/**
-	 * @api
-	 * @param TYPO3\CMS\Extbase\Persistence\ObjectStorage
+	 * @param Rattazonk\Extbasepages\Tree\ElementWrapper $element
+	 * @return boolean
 	 */
-	public function setChildren( $children ) {
-		$this->children = $children;
+	protected function elementIsAllowed( ElementWrapper $element ) {
+		return $element->getDoktype() < 200;
 	}
-
-	/**
-	 * @api
-	 * @return TRUE
-	 */
-	public function isContainer() {
-		return TRUE;
-	}
-
-	/**
-	 * for fluid
-	 * @api
-	 */
-	public function getIsContainer() {
-		return $this->isContainer();
-	}
-
 }

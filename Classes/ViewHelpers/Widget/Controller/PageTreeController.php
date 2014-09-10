@@ -1,9 +1,11 @@
 <?php
 namespace Rattazonk\Extbasepages\ViewHelpers\Widget\Controller;
 
-use Rattazonk\Extbasepages\Utility\PageTree\Filter\AbstractFilter as AbstractTreeFilter;
+use Rattazonk\Extbasepages\Tree\Filter\AbstractFilter
+	as AbstractTreeFilter;
+use \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
 
-class PageTreeController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController {
+class PageTreeController extends AbstractWidgetController {
 
 	/** @var int **/
 	protected $startPid = 0;
@@ -49,14 +51,14 @@ class PageTreeController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
 				$filter->filter( $element );
 
 				if(	$this->widgetConfiguration['renderChildrenOfSkipped']
-					|| !$element->treeWrapperIsCleared() ) {
+					|| !$element->wrappedElementIsHidden() ) {
 
 					$element->setChildren( 
 						$this->filterTree( $element->getChildren(), FALSE )
 					);
 				}
 
-				if( $element->treeWrapperIsCleared() ) {
+				if( $element->wrappedElementIsHidden() ) {
 					break;
 				}
 			}
@@ -74,7 +76,10 @@ class PageTreeController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
 		$wrappedTree = array();
 
 		foreach( $tree as $element ) {
-			$wrappedElement = $this->objectManager->get('Rattazonk\Extbasepages\Domain\Model\TreeWrapper', $element);
+			$wrappedElement = $this->objectManager->get(
+				'Rattazonk\Extbasepages\Tree\ElementWrapper', 
+				$element
+			);
 			$wrappedChildren = $this->initWrappers(
 				$element->getChildren()
 			);
@@ -92,7 +97,7 @@ class PageTreeController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
 	}
 
 	/**
-	 * @param Rattazonk\Extbasepages\Utility\PageTree\Filter\AbstractFilter $treeFilter
+	 * @param Rattazonk\Extbasepages\Tree\Filter\AbstractFilter $treeFilter
 	 * @return void
 	 */
 	public function addTreeFilter(AbstractTreeFilter $treeFilter) {

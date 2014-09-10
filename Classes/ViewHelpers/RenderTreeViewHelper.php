@@ -4,7 +4,7 @@ namespace Rattazonk\Extbasepages\ViewHelpers;
 class RenderTreeViewHelper
 	extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 	implements \TYPO3\CMS\Fluid\Core\ViewHelper\Facets\ChildNodeAccessInterface {
-	
+
 	// maybe \TYPO3\CMS\Fluid\Core\ViewHelper\Facets\CompilableInterface
 
 	/**

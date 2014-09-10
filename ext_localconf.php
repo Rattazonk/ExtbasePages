@@ -9,7 +9,7 @@ foreach( $doktypeFilter as $filterName ) {
 	$signalSlotDispatcher->connect(
 		'Rattazonk\Extbasepages\ViewHelpers\Widget\Controller\PageTreeController',
 	 	'initTreeFilters',
-		"Rattazonk\\Extbasepages\\Utility\\PageTree\\Filter\\Doktype\\{$filterName}Filter",
+		"Rattazonk\\Extbasepages\\Tree\\Filter\\Doktype\\{$filterName}Filter",
 		'registerIfResponsible'
 	);	
 }
