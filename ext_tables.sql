@@ -7,4 +7,13 @@
 CREATE TABLE pages (
 	sub_pages int(11) unsigned DEFAULT '0' NOT NULL,
 	content int(11) unsigned DEFAULT '0' NOT NULL
+=======
+# Table structure for table 'pages'
+#
+CREATE TABLE pages (
+	tx_slimblog_author int(11) DEFAULT '0' NOT NULL
+);
+
+CREATE TABLE pages_language_overlay (
+	tx_slimblog_author int(11) DEFAULT '0' NOT NULL
 );

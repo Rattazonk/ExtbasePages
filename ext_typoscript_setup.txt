@@ -1,26 +1,22 @@
-config.tx_extbase{
-	persistence{
-		classes{
-			Rattazonk\Extbasepages\Domain\Model\Page {
-				mapping {
-					tableName = pages					
-					columns {
-						pid.mapOnProperty = parent
-						subtitle.mapOnProperty = subTitle
-						starttime.mapOnProperty = startTime
-						crdate.mapOnProperty = creationDate
-					}
-				}
+config.tx_extbase.persistence.classes {
+	Rattazonk\Extbasepages\Domain\Model\Page {
+		mapping {
+			tableName = pages					
+			columns {
+				pid.mapOnProperty = parent
+				subtitle.mapOnProperty = subTitle
+				starttime.mapOnProperty = startTime
+				crdate.mapOnProperty = creationDate
 			}
-			Rattazonk\Extbasepages\Domain\Model\Content {
-				mapping {
-					tableName = tt_content					
-					columns {
-						pid.mapOnProperty = page
-						ctype.mapOnProperty = type
-						bodytext.mapOnProperty = bodyText
-					}
-				}
+		}
+	}
+	Rattazonk\Extbasepages\Domain\Model\Content {
+		mapping {
+			tableName = tt_content					
+			columns {
+				pid.mapOnProperty = page
+				ctype.mapOnProperty = type
+				bodytext.mapOnProperty = bodyText
 			}
 		}
 	}
