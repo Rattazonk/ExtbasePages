@@ -30,7 +30,8 @@ namespace Rattazonk\Extbasepages\Domain\Model;
 /**
  * Page
  */
-class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class Page
+	extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @var Rattazonk\Extbasepages\Domain\Model\Page
@@ -100,14 +101,6 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		} else {
 			return NULL;
 		}
-	}
-
-	/**
-	 * @api
-	 * @return TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page>
-	 */
-	public function getChildren() {
-		return $this->getSubPages();
 	}
 
 	/**
@@ -200,4 +193,21 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	public function getCreationDate() {
 		return new \DateTime( date('c', $this->creationDate) );
 	}
+
+	/**
+	 * @api
+	 * @return TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page>
+	 */
+	public function getChildren() {
+		return $this->getSubPages();
+	}
+
+	/**
+	 * @api
+	 * @return boolean
+	 */
+	public function hasChildren() {
+		return !empty($this->getChildren());
+	}
+
 }

@@ -32,7 +32,7 @@ namespace Rattazonk\Extbasepages\Tree;
  * to wrap objects in the tree so we dont have to pollute them
  * e. g. when we manipulate the children
  */
-class ElementWrapper implements \RecursiveIterator {
+class ElementWrapper {
 
 	/** object **/
 	protected $wrappedObject;
@@ -40,7 +40,7 @@ class ElementWrapper implements \RecursiveIterator {
 	/**
 	 * boolen whether the wrapped object is hidden from the outside or not
 	 * When the object is hidden, only the RecursiveIterator methods are available
-	 * @boolean
+	 * @var boolean
 	 */
 	protected $hiddenWrappedObject = FALSE;
 
@@ -135,8 +135,7 @@ class ElementWrapper implements \RecursiveIterator {
 	}
 
 	/**
-	 * @api \RecursiveIterator
-	 * @return \RecursiveIterator
+	 * @return TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page>
 	 */
 	public function getChildren() {
 		return $this->callGetter('children');
@@ -144,49 +143,9 @@ class ElementWrapper implements \RecursiveIterator {
 
 	/**
 	 * override it if you need another check
-	 * @api \RecursiveIterator
 	 * @return boolean
 	 */
 	public function hasChildren() {
 		return !empty($this->callGetter('children'));
-	}
-
-	/**
-	 * @api
-	 * @return mixed
-	 */
-	public function current() {
-		return $this->getChildren()->current();
-	}
-	/**
-	 * @api
-	 * @return scalar
-	 */
-	public function key() {
-		return $this->getChildren()->key();
-	}
-
-	/**
-	 * @api
-	 * @return void
-	 */
-	public function next() {
-		return $this->getChildren()->next();
-	}
-
-	/**
-	 * @api
-	 * @return void
-	 */
-	public function rewind() {
-		return $this->getChildren()->rewind();
-	}
-
-	/**
-	 * @api
-	 * @return boolean
-	 */
-	public function valid() {
-		return $this->getChildren()->valid();
 	}
 }
