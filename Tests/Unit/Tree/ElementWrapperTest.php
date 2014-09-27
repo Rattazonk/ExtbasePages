@@ -107,4 +107,23 @@ class ElementWrapperTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			$this->subject->getWrappedElement()->getChildren()
 		);
 	}
+
+	/**
+	 * @test
+	 */
+	public function hasChildren() {
+		$page = $this->getMock('Rattazonk\Extbasepages\Domain\Model\Page', array('setChildren', 'getChildren'));
+		$page->expects($this->any())
+			->method( 'getChildren' )
+			->will( $this->returnValue(array()) );
+		$this->subject = new \Rattazonk\Extbasepages\Tree\ElementWrapper( $page );
+		$this->assertFalse( $this->subject->hasChildren() );
+
+		$this->subject->setChildren( array('notEmpty') );
+		$this->assertTrue( $this->subject->hasChildren() );
+
+		$emptyObjectStorage = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		$this->subject->setChildren( $emptyObjectStorage );
+		$this->assertFalse( $this->subject->hasChildren() );
+	}
 }

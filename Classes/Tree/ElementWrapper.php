@@ -153,6 +153,12 @@ class ElementWrapper {
 	 * @return boolean
 	 */
 	public function hasChildren() {
-		return !empty($this->callGetter('children'));
+		$children = $this->callGetter('children');
+
+		if( $children INSTANCEOF \Countable ) {
+			return $children->count() > 0;
+		} else {
+			return !empty($this->callGetter('children'));
+		}
 	}
 }
