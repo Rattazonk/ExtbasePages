@@ -60,6 +60,13 @@ class ElementWrapper {
 	}
 
 	/**
+	 * @return \Object
+	 */
+	public function getWrappedElement() {
+		return $this->wrappedObject;
+	}
+
+	/**
 	 * the name is not only 'hide' to reduce conflicts with the wrapped object
 	 * it is used to hide elements in a tree but let the children be accessible
 	 *
