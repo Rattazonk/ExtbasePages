@@ -63,16 +63,26 @@ class ElementWrapperTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function passCallsThrough() {
-		$page = $this->getMock('Rattazonk\Extbasepages\Domain\Model\Page', array('getFooBar'));
+		$page = $this->getMock('Rattazonk\Extbasepages\Domain\Model\Page',
+			array('getFooBar', 'notGetterOrSetter')
+		);
 		$page->expects($this->any())
 			->method( 'getFooBar' )
 			->will( $this->returnValue('bazFoo') );
+		$page->expects($this->once())
+			->method( 'notGetterOrSetter' )
+			->will( $this->returnValue('yesThisIsPassedThroughTo') );
 
 		$this->subject = new \Rattazonk\Extbasepages\Tree\ElementWrapper( $page );
 
 		$this->assertSame(
 			'bazFoo',
 			$this->subject->getFooBar()
+		);
+
+		$this->assertSame(
+			'yesThisIsPassedThroughTo',
+			$this->subject->notGetterOrSetter()
 		);
 	}
 
@@ -112,7 +122,10 @@ class ElementWrapperTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function hasChildren() {
-		$page = $this->getMock('Rattazonk\Extbasepages\Domain\Model\Page', array('setChildren', 'getChildren'));
+		$page = $this->getMock(
+			'Rattazonk\Extbasepages\Domain\Model\Page',
+			array('setChildren', 'getChildren')
+		);
 		$page->expects($this->any())
 			->method( 'getChildren' )
 			->will( $this->returnValue(array()) );
@@ -126,4 +139,41 @@ class ElementWrapperTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$this->subject->setChildren( $emptyObjectStorage );
 		$this->assertFalse( $this->subject->hasChildren() );
 	}
+
+	/**
+	 * @test
+	 */
+	public function canHideWrappedObject() {
+		$page = $this->getMock(
+			'Rattazonk\Extbasepages\Domain\Model\Page', 
+			array('getTitle', 'getChildren')
+		);
+		$page->expects($this->any())
+			->method( 'getTitle' )
+			->will( $this->returnValue('iAmVisible') );
+		$page->expects($this->any())
+			->method( 'getChildren' )
+			->will( $this->returnValue('childrenOfWrappedElement') );
+		$this->subject = new \Rattazonk\Extbasepages\Tree\ElementWrapper( $page );
+
+		$this->assertSame(
+			'iAmVisible',
+			$this->subject->getTitle()
+		);
+		$this->assertSame(
+			'childrenOfWrappedElement',
+			$this->subject->getChildren()
+		);
+
+		$this->subject->hideWrappedElement();
+
+		$this->assertNull(
+			$this->subject->getTitle()
+		);
+		$this->assertSame(
+			'childrenOfWrappedElement',
+			$this->subject->getChildren()
+		);
+	}
+
 }
