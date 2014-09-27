@@ -58,4 +58,53 @@ class ElementWrapperTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			$this->subject->getWrappedElement()
 		);
 	}
+
+	/**
+	 * @test
+	 */
+	public function passCallsThrough() {
+		$page = $this->getMock('Rattazonk\Extbasepages\Domain\Model\Page', array('getFooBar'));
+		$page->expects($this->any())
+			->method( 'getFooBar' )
+			->will( $this->returnValue('bazFoo') );
+
+		$this->subject = new \Rattazonk\Extbasepages\Tree\ElementWrapper( $page );
+
+		$this->assertSame(
+			'bazFoo',
+			$this->subject->getFooBar()
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function overWriteChildrenWithoutTouchingWrappedElement() {
+		$page = $this->getMock('Rattazonk\Extbasepages\Domain\Model\Page', array('setChildren', 'getChildren'));
+		$page->expects($this->any())
+			->method( 'getChildren' )
+			->will( $this->returnValue('bazFoo') );
+
+		$page->expects($this->never())
+			->method( 'setChildren' );
+
+		$this->subject = new \Rattazonk\Extbasepages\Tree\ElementWrapper( $page );
+
+		$this->assertSame(
+			'bazFoo',
+			$this->subject->getChildren()
+		);
+
+		$this->subject->setChildren( 'fooBar' );
+
+		$this->assertSame(
+			'fooBar',
+			$this->subject->getChildren()
+		);
+
+		$this->assertSame(
+			'bazFoo',
+			$this->subject->getWrappedElement()->getChildren()
+		);
+	}
 }
