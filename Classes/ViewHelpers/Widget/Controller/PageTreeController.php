@@ -104,16 +104,5 @@ class PageTreeController extends AbstractWidgetController {
 		$this->treeFilters[] = $treeFilter;
 	}
 
-	protected function debug( $tree ) {
-		echo '<div style="padding-left: 20px">';
-		foreach( $tree as $element ) {
-			echo get_class( $element );
-			echo '::' . $element->getUid();
-			echo '<br>children:<hr>';
-
-			$this->debug( $element->getChildren() );
-		}
-		echo '</div>';
-	}
 }
 ?>

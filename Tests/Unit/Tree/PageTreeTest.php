@@ -93,42 +93,7 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function wrapPagesRecursively() {
-		$pageMockOne = $this->getMock(
-			'Rattazonk\Extbasepages\Domain\Model\Page',
-			array('getChildren')
-		);
-		$pageMockOneOne = $this->getMock(
-			'Rattazonk\Extbasepages\Domain\Model\Page',
-			array('getChildren')
-		);
-		$pageMockOneTwo = $this->getMock(
-			'Rattazonk\Extbasepages\Domain\Model\Page',
-			array('getChildren')
-		);
-		$pageMockOneTwoOne = $this->getMock(
-			'Rattazonk\Extbasepages\Domain\Model\Page',
-			array('getChildren')
-		);
-		$pageMockTwo = $this->getMock(
-			'Rattazonk\Extbasepages\Domain\Model\Page',
-			array('getChildren')
-		);
-		$pageMockTwoOne = $this->getMock(
-			'Rattazonk\Extbasepages\Domain\Model\Page',
-			array('getChildren')
-		);
-
-		$this->returnsAsChildren( $pageMockOne, array($pageMockOneOne, $pageMockOneTwo) );
-		$this->returnsAsChildren( $pageMockOneOne );
-		$this->returnsAsChildren( $pageMockOneTwo, array($pageMockOneTwoOne) );
-		$this->returnsAsChildren( $pageMockOneTwoOne );
-		$this->returnsAsChildren( $pageMockTwo, array($pageMockTwoOne) );
-		$this->returnsAsChildren( $pageMockTwoOne );
-
-		$this->pageRepositoryMock->expects($this->once())
-			->method('findByParent')
-			->with($this->equalTo( $this->currentPageUid ))
-			->will($this->returnValue( array($pageMockOne, $pageMockTwo) ));
+		$pageMocks = $this->initTestTree();
 
 		$firstLevel = $this->subject->getFirstLevelPages();
 
@@ -136,7 +101,7 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$this->assertCount(2, $firstLevel, 'The first level hasnt 2 children');
 		$firstLevel->rewind();
 		$wrappedOne = $firstLevel->current();
-		$this->isWrappedPage( $wrappedOne, $pageMockOne, 'One isnt wrapped' );
+		$this->isWrappedPage( $wrappedOne, $pageMocks['one'], 'One isnt wrapped' );
 
 		$wrappedOneChildren = $wrappedOne->getChildren();
 		$this->assertInstanceOf(
@@ -147,7 +112,7 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$this->assertCount(2, $wrappedOneChildren);
 		$wrappedOneChildren->rewind();
 		$wrappedOneOne = $wrappedOneChildren->current();
-		$this->isWrappedPage( $wrappedOneOne, $pageMockOneOne );
+		$this->isWrappedPage( $wrappedOneOne, $pageMocks['oneOne'] );
 
 		$wrappedOneOneChildren = $wrappedOneOne->getChildren();
 		$this->assertInstanceOf('\TYPO3\CMS\Extbase\Persistence\ObjectStorage', $wrappedOneOneChildren);
@@ -155,24 +120,66 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 		$wrappedOneChildren->next();
 		$wrappedOneTwo = $wrappedOneChildren->current();
-		$this->isWrappedPage( $wrappedOneTwo, $pageMockOneTwo );
+		$this->isWrappedPage( $wrappedOneTwo, $pageMocks['oneTwo'] );
 
 		$wrappedOneTwoChildren = $wrappedOneTwo->getChildren();
 		$this->assertInstanceOf('\TYPO3\CMS\Extbase\Persistence\ObjectStorage', $wrappedOneTwoChildren);
 		$this->assertCount(1, $wrappedOneTwoChildren);
 		$wrappedOneTwoChildren->rewind();
-		$this->isWrappedPage( $wrappedOneTwoChildren->current(), $pageMockOneTwoOne );
+		$this->isWrappedPage( $wrappedOneTwoChildren->current(), $pageMocks['oneTwoOne'] );
 
 
 		$firstLevel->next();
 		$wrappedTwo = $firstLevel->current();
-		$this->isWrappedPage( $wrappedTwo, $pageMockTwo );
+		$this->isWrappedPage( $wrappedTwo, $pageMocks['two'] );
 
 		$wrappedTwoChildren = $wrappedTwo->getChildren();
 		$this->assertInstanceOf('\TYPO3\CMS\Extbase\Persistence\ObjectStorage', $wrappedTwoChildren);
 		$this->assertCount(1, $wrappedTwoChildren);
 		$wrappedTwoChildren->rewind();
-		$this->isWrappedPage( $wrappedTwoChildren->current(), $pageMockTwoOne );
+		$this->isWrappedPage( $wrappedTwoChildren->current(), $pageMocks['twoOne'] );
+	}
+
+	protected function initTestTree() {
+		$pageMocks['one'] = $this->getMock(
+			'Rattazonk\Extbasepages\Domain\Model\Page',
+			array('getChildren')
+		);
+		$pageMocks['oneOne'] = $this->getMock(
+			'Rattazonk\Extbasepages\Domain\Model\Page',
+			array('getChildren')
+		);
+		$pageMocks['oneTwo'] = $this->getMock(
+			'Rattazonk\Extbasepages\Domain\Model\Page',
+			array('getChildren')
+		);
+		$pageMocks['oneTwoOne'] = $this->getMock(
+			'Rattazonk\Extbasepages\Domain\Model\Page',
+			array('getChildren')
+		);
+		$pageMocks['two'] = $this->getMock(
+			'Rattazonk\Extbasepages\Domain\Model\Page',
+			array('getChildren')
+		);
+		$pageMocks['twoOne'] = $this->getMock(
+			'Rattazonk\Extbasepages\Domain\Model\Page',
+			array('getChildren')
+		);
+		$this->pageCount = 6;
+
+		$this->returnsAsChildren( $pageMocks['one'], array($pageMocks['oneOne'], $pageMocks['oneTwo']) );
+		$this->returnsAsChildren( $pageMocks['oneOne'] );
+		$this->returnsAsChildren( $pageMocks['oneTwo'], array($pageMocks['oneTwoOne']) );
+		$this->returnsAsChildren( $pageMocks['oneTwoOne'] );
+		$this->returnsAsChildren( $pageMocks['two'], array($pageMocks['twoOne']) );
+		$this->returnsAsChildren( $pageMocks['twoOne'] );
+
+		$this->pageRepositoryMock->expects($this->once())
+			->method('findByParent')
+			->with($this->equalTo( $this->currentPageUid ))
+			->will($this->returnValue( array($pageMocks['one'], $pageMocks['two']) ));
+
+		return $pageMocks;
 	}
 
 	protected function returnsAsChildren( $page, $children = array() ) {
@@ -184,6 +191,25 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	protected function isWrappedPage( $wrapped, $page, $message = '' ) {
 		$this->assertInstanceOf( '\Rattazonk\Extbasepages\Tree\ElementWrapper', $wrapped, $message );
 		$this->assertSame( $page, $wrapped->getWrappedElement(), $message );
+	}
+
+	/**
+	 * @test
+	 */
+	public function treeFilter() {
+		$pageMocks = $this->initTestTree();
+
+		$filter = $this->getMockForAbstractClass(
+			'Rattazonk\Extbasepages\Tree\Filter\AbstractFilter',
+			array(), '', TRUE, TRUE, TRUE,
+			array('filter')
+		);
+
+		$filter->expects($this->exactly( $this->pageCount ))
+			->method('filter');
+
+		$this->subject->addFilter( $filter );
+		$this->subject->getFirstLevelPages();
 	}
 }
 

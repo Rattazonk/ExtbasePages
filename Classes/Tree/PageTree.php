@@ -44,6 +44,9 @@ class PageTree {
 	/** @var boolean **/
 	protected $initialized = FALSE;
 
+	/** @var array **/
+	protected $filters = array();
+
 	/**
 	 * @var Rattazonk\Extbasepages\Domain\Repository\PageRepository
 	 * @inject
@@ -59,7 +62,9 @@ class PageTree {
 		$firstLevelPages = $this->pageRepository->findByParent(
 			(int) $GLOBALS['TSFE']->id
 		);
-		$this->firstLevelPages = $this->wrapTree( $firstLevelPages );
+		$firstLevelPages = $this->wrapTree( $firstLevelPages );
+		$this->firstLevelPages = $this->filterTree( $firstLevelPages );
+		$this->initialized = TRUE;
 	}
 
 	protected function wrapTree( $currentLevel ) {
@@ -79,5 +84,23 @@ class PageTree {
 		}
 
 		return $wrappedLevel;
+	}
+
+	public function addFilter($filter) {
+		$this->filters[] = $filter;
+	}
+
+	public function filterTree( $level ) {
+		foreach( $level as $page ) {
+			foreach( $this->filters as $filter ) {
+				$filter->filter( $page );
+				$this->filterTree( $page->getChildren() );
+
+				if( $page->wrappedElementIsHidden() ) {
+					break;
+				}
+			}
+		}
+		return $level;
 	}
 }
