@@ -82,7 +82,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @api
 	 */
 	public function getCType() {
-		return $this->type;
+		return $this->getType();
 	}
 
 	/**
@@ -91,7 +91,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setCType($type) {
-		$this->type = $type;
+		$this->setType( $type );
 	}
 
 	/**
