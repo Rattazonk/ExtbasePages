@@ -48,7 +48,7 @@ class ContentTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		unset($this->subject);
 	}
 
-	protected function testGetterSetter( $name, $value ) {
+	protected function _testGetterSetter( $name, $value ) {
 		$setter = 'set' . ucfirst( $name );
 		$getter = 'get' . ucfirst( $name );
 
@@ -70,7 +70,7 @@ class ContentTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 */
 	public function getSetPage() {
 		$page = new \Rattazonk\Extbasepages\Domain\Model\Page();
-		$this->testGetterSetter( 'page', $page );
+		$this->_testGetterSetter( 'page', $page );
 	}
 
 	/**
@@ -79,7 +79,7 @@ class ContentTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getSetCType() {
-		$this->testGetterSetter( 'cType', 'fooBar' );
+		$this->_testGetterSetter( 'cType', 'fooBar' );
 	}
 
 
@@ -89,7 +89,7 @@ class ContentTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getSetHeader() {
-		$this->testGetterSetter( 'header', 'fooBar' );
+		$this->_testGetterSetter( 'header', 'fooBar' );
 	}
 
 	/**
@@ -98,7 +98,7 @@ class ContentTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getSetBodyText() {
-		$this->testGetterSetter( 'bodytext', 'fooBar' );
+		$this->_testGetterSetter( 'bodytext', 'fooBar' );
 	}
 
 }

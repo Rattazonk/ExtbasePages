@@ -48,7 +48,7 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		unset($this->subject);
 	}
 
-	protected function testGetterSetter( $name, $value ) {
+	protected function _testGetterSetter( $name, $value ) {
 		$setter = 'set' . ucfirst( $name );
 		$getter = 'get' . ucfirst( $name );
 
@@ -69,7 +69,7 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getSetTitle() {
-		$this->testGetterSetter( 'title', 'fooBar' );
+		$this->_testGetterSetter( 'title', 'fooBar' );
 	}
 
 	/**
@@ -78,7 +78,7 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getSetSubTitle() {
-		$this->testGetterSetter( 'subTitle', 'fooBar' );
+		$this->_testGetterSetter( 'subTitle', 'fooBar' );
 	}
 
 	/**
@@ -87,7 +87,7 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getSetDoktype() {
-		$this->testGetterSetter( 'doktype', 'fooBar' );
+		$this->_testGetterSetter( 'doktype', 'fooBar' );
 	}
 
 	/**
@@ -97,7 +97,7 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 */
 	public function getSetChildren() {
 		$objectStorage = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-		$this->testGetterSetter( 'children', $objectStorage );
+		$this->_testGetterSetter( 'children', $objectStorage );
 	}
 
 	/**
@@ -129,7 +129,7 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$startTimeDateTime = new \DateTime();
 		$startTimeDateTime->setTimestamp( $startTimeTimestamp );
 
-		$this->testGetterSetter( 'startTime', $startTimeDateTime );
+		$this->_testGetterSetter( 'startTime', $startTimeDateTime );
 
 		$this->subject->setStartTime( $startTimeTimestamp );
 		$this->assertEquals(

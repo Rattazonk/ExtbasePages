@@ -27,81 +27,57 @@ namespace Rattazonk\Extbasepages\Tree;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class PageTree implements \RecursiveIterator {
-
-	/**
-	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage
-	 */
-	public function __construct( $children ) {
-
-	}
+class PageTree {
 
 	/**
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage
 	 * @inject
 	 */
-	protected $children;
+	protected $firstLevelPages;
 
 	/**
-	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $children
+	 * @var TYPO3\CMS\Extbase\Object\ObjectManagerInterface
+	 * @inject
 	 */
-	public function setChildren($children) {
-		$this->children = $children;
+	protected $objectManager;
+
+	/** @var boolean **/
+	protected $initialized = FALSE;
+
+	/**
+	 * @var Rattazonk\Extbasepages\Domain\Repository\PageRepository
+	 * @inject
+	 */
+	protected $pageRepository;
+
+	public function getFirstLevelPages() {
+		if( !$this->initialized ) { $this->initialize(); }
+		return $this->firstLevelPages;
 	}
 
-	/**
-	 * @api \RecursiveIterator
-	 * @return \RecursiveIterator
-	 */
-	public function getChildren() {
-		return $this->children;
+	protected function initialize() {
+		$firstLevelPages = $this->pageRepository->findByParent(
+			(int) $GLOBALS['TSFE']->id
+		);
+		$this->firstLevelPages = $this->wrapTree( $firstLevelPages );
 	}
 
-	/**
-	 * @api \RecursiveIterator
-	 * @return boolean
-	 */
-	public function hasChildren() {
-		return !empty($this->getChildren());
-	}
+	protected function wrapTree( $currentLevel ) {
+		$wrappedLevel = $this->objectManager->get( 'TYPO3\CMS\Extbase\Persistence\ObjectStorage' );
 
-	/**
-	 * @api
-	 * @return mixed
-	 */
-	public function current() {
-		return $this->getChildren()->current();
-	}
+		foreach( $currentLevel as $page ) {
+			$wrappedPage = $this->objectManager->get(
+				'Rattazonk\Extbasepages\Tree\ElementWrapper',
+				$page
+			);
+			$wrappedLevel->attach( $wrappedPage );
 
-	/**
-	 * @api
-	 * @return scalar
-	 */
-	public function key() {
-		return $this->getChildren()->key();
-	}
+			// the wrapped children are stored in the wrapper of the page, the page itself stays clean
+			$wrappedPage->setChildren(
+				$this->wrapTree( $wrappedPage->getChildren() )
+			);
+		}
 
-	/**
-	 * @api
-	 * @return void
-	 */
-	public function next() {
-		return $this->getChildren()->next();
-	}
-
-	/**
-	 * @api
-	 * @return void
-	 */
-	public function rewind() {
-		return $this->getChildren()->rewind();
-	}
-
-	/**
-	 * @api
-	 * @return boolean
-	 */
-	public function valid() {
-		return $this->getChildren()->valid();
+		return $wrappedLevel;
 	}
 }
