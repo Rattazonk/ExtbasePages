@@ -58,13 +58,10 @@ class Page
 	protected $doktype;
 
 	/** @var int  **/
-	protected $startTime;
+	protected $startTime = 0;
 
 	/** @var int  **/
 	protected $creationDate;
-
-	/** @var DateTime **/
-	protected $test;
 
 	/**
 	 * @param TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page>
@@ -174,7 +171,8 @@ class Page
 		if( $this->startTime === 0 ) {
 			$startTime = NULL;
 		} else {
-			$startTime = new \DateTime( date('c', $this->startTime) );
+			$startTime = new \DateTime();
+			$startTime->setTimestamp( $this->startTime );
 		}
 		return $startTime;
 	}

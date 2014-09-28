@@ -48,10 +48,93 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		unset($this->subject);
 	}
 
+	protected function testGetterSetter( $name, $value ) {
+		$setter = 'set' . ucfirst( $name );
+		$getter = 'get' . ucfirst( $name );
+
+		$this->assertNotEquals(
+			$value,
+			$this->subject->$getter()
+		);
+		$this->subject->$setter( $value );
+		$this->assertEquals(
+			$value,
+			$this->subject->$getter()
+		);
+	}
+
+	/**
+	 * Need the getter setter for other extensions, so I can test them implicitly
+	 *
+	 * @test
+	 */
+	public function getSetTitle() {
+		$this->testGetterSetter( 'title', 'fooBar' );
+	}
+
+	/**
+	 * Need the getter setter for other extensions, so I can test them implicitly
+	 *
+	 * @test
+	 */
+	public function getSetSubTitle() {
+		$this->testGetterSetter( 'subTitle', 'fooBar' );
+	}
+
+	/**
+	 * Need the getter setter for other extensions, so I can test them implicitly
+	 *
+	 * @test
+	 */
+	public function getSetDoktype() {
+		$this->testGetterSetter( 'doktype', 'fooBar' );
+	}
+
+	/**
+	 * Need the getter setter for other extensions, so I can test them implicitly
+	 *
+	 * @test
+	 */
+	public function getSetChildren() {
+		$objectStorage = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		$this->testGetterSetter( 'children', $objectStorage );
+	}
+
 	/**
 	 * @test
 	 */
-	public function dummyTestToNotLeaveThisFileEmpty() {
-		$this->markTestIncomplete();
+	public function getFirstContentFromObjectStorage() {
+		$objectStorage = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		$contentMockOne = $this->getMock( 'Rattazonk\Extbasepages\Domain\Model\Content' );
+		$contentMockTwo = $this->getMock( 'Rattazonk\Extbasepages\Domain\Model\Content' );
+
+		$objectStorage->attach( $contentMockOne );
+		$objectStorage->attach( $contentMockTwo );
+
+		$this->subject->setContent( $objectStorage );
+
+		$this->assertSame(
+			$contentMockOne,
+			$this->subject->getFirstContent()
+		);
+
+		return $objectStorage;
+	}
+
+	/**
+	 * @test
+	 */
+	public function getSetStartTime() {
+		$startTimeTimestamp = 1411847530;
+		$startTimeDateTime = new \DateTime();
+		$startTimeDateTime->setTimestamp( $startTimeTimestamp );
+
+		$this->testGetterSetter( 'startTime', $startTimeDateTime );
+
+		$this->subject->setStartTime( $startTimeTimestamp );
+		$this->assertEquals(
+			$startTimeDateTime,
+			$this->subject->getStartTime()
+		);
 	}
 }
