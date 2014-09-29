@@ -140,6 +140,15 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$this->isWrappedPage( $wrappedTwoChildren->current(), $pageMocks['twoOne'] );
 	}
 
+	/**
+	 * initializes a test tree of pageMocks
+	 * one
+	 * 	oneOne
+	 * 	oneTwo
+	 * 		oneTwoOne
+	 * two
+	 * 	twoOne
+	 */
 	protected function initTestTree() {
 		$pageMocks['one'] = $this->getMock(
 			'Rattazonk\Extbasepages\Domain\Model\Page',
@@ -196,6 +205,39 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
+	public function forEachElement() {
+		$pageMocks = $this->initTestTree();
+
+		$counter = 0;
+		$this->subject->forEachElement( function($page) use (&$counter) {
+			$counter++;
+		});
+
+		$this->assertEquals(
+			$this->pageCount,
+			$counter,
+			'Foreach traversed not through all pages'
+		);
+
+		$counter = 0;
+		$this->subject->forEachElement( function($page) use (&$counter, $pageMocks) {
+			$counter++;
+			if( $page->getWrappedElement() === $pageMocks['one'] ) {
+				return FALSE;
+			}
+		});
+
+		$this->assertEquals(
+			$this->pageCount - 3,
+			$counter,
+			'Foreach didnt ignore the children of one'
+		);
+
+	}
+
+	/**
+	 * @test
+	 */
 	public function treeFilter() {
 		$pageMocks = $this->initTestTree();
 
@@ -210,6 +252,55 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 		$this->subject->addFilter( $filter );
 		$this->subject->getFirstLevelPages();
+	}
+
+	/**
+	 * @test
+	 */
+	public function flattenedPages() {
+		$this->initTestTree();
+
+		$this->assertCount(
+			$this->pageCount,
+			$this->subject->getFlattenedPages()
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function childrenOfHiddenAreDefaultHidden() {
+		$pageMocks = $this->initTestTree();
+
+		// default is to hide children of hidden, so when we hide oneTwo, oneTwoOne should be hidden to
+		$filter = $this->getMockForAbstractClass(
+			'Rattazonk\Extbasepages\Tree\Filter\AbstractFilter',
+			array(), '', TRUE, TRUE, TRUE,
+			array('filter')
+		);
+
+		$filter->expects($this->any())
+			->method('filter')
+			->will($this->returnCallback(
+				function() use ($pageMocks) {
+					$currentWrapper = array_shift(func_get_args());
+					$currentPage = $currentWrapper->getWrappedElement();
+					if( $currentPage === $pageMocks['oneTwo'] ) {
+						$currentWrapper->hideWrappedElement();
+					}
+				}));
+		$this->subject->addFilter( $filter );
+		$this->subject->getFirstLevelPages();
+
+		foreach( $this->subject->getFlattenedPages() as $wrappedPage ) {
+			if( $wrappedPage->getWrappedElement() === $pageMocks['oneTwo'] ) {
+				$this->assertTrue( $wrappedPage->wrappedElementIsHidden(), 'This element should be directly hidden' );
+			} elseif( $wrappedPage->getWrappedElement() === $pageMocks['oneTwoOne'] ) {
+				$this->assertTrue( $wrappedPage->wrappedElementIsHidden(), 'This element should be hidden by default, because its parent was hidden, too' );
+			} else {
+				$this->assertFalse( $wrappedPage->wrappedElementIsHidden() );
+			}
+		}
 	}
 }
 

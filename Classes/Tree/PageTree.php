@@ -54,16 +54,24 @@ class PageTree {
 	protected $pageRepository;
 
 	public function getFirstLevelPages() {
-		if( !$this->initialized ) { $this->initialize(); }
+		$this->ensureInitialization();
 		return $this->firstLevelPages;
 	}
 
-	protected function initialize() {
+	protected function ensureInitialization() {
+		if( $this->initialized ) {
+			return TRUE;
+		}
+
 		$firstLevelPages = $this->pageRepository->findByParent(
 			(int) $GLOBALS['TSFE']->id
 		);
 		$firstLevelPages = $this->wrapTree( $firstLevelPages );
-		$this->firstLevelPages = $this->filterTree( $firstLevelPages );
+		$this->filterTree( $firstLevelPages );
+		$this->hideChildrenOfHidden( $firstLevelPages );
+
+		$this->firstLevelPages = $firstLevelPages;
+		$this->initialized = TRUE;
 	}
 
 	protected function wrapTree( $currentLevel ) {
@@ -85,6 +93,16 @@ class PageTree {
 		return $wrappedLevel;
 	}
 
+	public function getFlattenedPages() {
+		$this->ensureInitialization();
+
+		$flattenedPages = $this->objectManager->get( 'TYPO3\CMS\Extbase\Persistence\ObjectStorage' );
+		$this->forEachElement(function($element) use (&$flattenedPages) {
+			$flattenedPages->attach( $element );
+		});
+		return $flattenedPages;
+	}
+
 	public function addFilter($filter) {
 		$this->filters[] = $filter;
 	}
@@ -94,14 +112,27 @@ class PageTree {
 		$this->forEachElement( function( $page ) use ($filters) {
 				foreach( $filters as $filter ) {
 					$filter->filter( $page );
-					if( $page->wrappedElementIsHidden() ) {
-						break;
-					}
+					if( $page->wrappedElementIsHidden() ) { break; }
 				}
 			},
 			$firstLevel
 		);
-		return $firstLevel;
+	}
+
+	protected function hideChildrenOfHidden( $firstLevelPages = NULL ) {
+		$this->forEachElement(function($page){
+			if( $page->wrappedElementIsHidden() ) {
+				// hide children recursively
+				$this->forEachElement(function($childrenToHide) {
+						$childrenToHide->hideWrappedElement();
+					}, $page->getChildren()
+				);
+				// stop searching, subtree already hidden
+				return FALSE;
+			}
+			// Go through children
+			return TRUE;
+		}, $firstLevelPages);
 	}
 
 	public function forEachElement( $callback, $level = NULL ) {
@@ -109,9 +140,12 @@ class PageTree {
 			$level = $this->getFirstLevelPages();
 		}
 		foreach( $level as $page ) {
-			$callback( $page );
-			$children = $this->forEachElement( $callback, $page->getChildren() );
-			$page->setChildren( $children );
+			// you can skip the rendering of children
+			// from the callback with returning FALSE (explicitly)
+			if( $callback($page) !== FALSE ) {
+				$children = $this->forEachElement( $callback, $page->getChildren() );
+				$page->setChildren( $children );
+			}
 		}
 		return $level;
 	}
