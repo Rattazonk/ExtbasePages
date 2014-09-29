@@ -39,7 +39,9 @@ class Page
 	 **/
 	protected $parent;
 	
-	/** @var TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page> **/
+	/**
+	 * @var TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page>
+	 **/
 	protected $subPages;
 
 	/**
@@ -62,6 +64,13 @@ class Page
 
 	/** @var int  **/
 	protected $creationDate;
+
+	/**
+	 * @param TYPO3\CMS\Extbase\Persistence\ObjectStorage
+	 */
+	public function injectSubpages(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $emptySubpages ) {
+		$this->subPages = $emptySubpages;
+	}
 
 	/**
 	 * @param TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page>

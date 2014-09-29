@@ -64,7 +64,6 @@ class PageTree {
 		);
 		$firstLevelPages = $this->wrapTree( $firstLevelPages );
 		$this->firstLevelPages = $this->filterTree( $firstLevelPages );
-		$this->initialized = TRUE;
 	}
 
 	protected function wrapTree( $currentLevel ) {
@@ -90,16 +89,29 @@ class PageTree {
 		$this->filters[] = $filter;
 	}
 
-	public function filterTree( $level ) {
-		foreach( $level as $page ) {
-			foreach( $this->filters as $filter ) {
-				$filter->filter( $page );
-				$this->filterTree( $page->getChildren() );
-
-				if( $page->wrappedElementIsHidden() ) {
-					break;
+	public function filterTree( $firstLevel ) {
+		$filters = $this->filters;
+		$this->forEachElement( function( $page ) use ($filters) {
+				foreach( $filters as $filter ) {
+					$filter->filter( $page );
+					if( $page->wrappedElementIsHidden() ) {
+						break;
+					}
 				}
-			}
+			},
+			$firstLevel
+		);
+		return $firstLevel;
+	}
+
+	public function forEachElement( $callback, $level = NULL ) {
+		if( $level === NULL ) {
+			$level = $this->getFirstLevelPages();
+		}
+		foreach( $level as $page ) {
+			$callback( $page );
+			$children = $this->forEachElement( $callback, $page->getChildren() );
+			$page->setChildren( $children );
 		}
 		return $level;
 	}

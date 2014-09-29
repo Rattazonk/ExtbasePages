@@ -41,7 +41,10 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	protected $subject = NULL;
 
 	protected function setUp() {
-		$this->subject = new \Rattazonk\Extbasepages\Domain\Model\Page();
+		$this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			'TYPO3\CMS\Extbase\Object\ObjectManager'
+		);
+		$this->subject = $this->objectManager->get('Rattazonk\Extbasepages\Domain\Model\Page');
 	}
 
 	protected function tearDown() {
@@ -52,12 +55,12 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$setter = 'set' . ucfirst( $name );
 		$getter = 'get' . ucfirst( $name );
 
-		$this->assertNotEquals(
+		$this->assertNotSame(
 			$value,
 			$this->subject->$getter()
 		);
 		$this->subject->$setter( $value );
-		$this->assertEquals(
+		$this->assertSame(
 			$value,
 			$this->subject->$getter()
 		);
@@ -96,6 +99,11 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getSetChildren() {
+		$this->assertInstanceOf(
+			'TYPO3\CMS\Extbase\Persistence\ObjectStorage',
+			$this->subject->getChildren()
+		);
+
 		$objectStorage = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		$this->_testGetterSetter( 'children', $objectStorage );
 	}
@@ -129,7 +137,15 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$startTimeDateTime = new \DateTime();
 		$startTimeDateTime->setTimestamp( $startTimeTimestamp );
 
-		$this->_testGetterSetter( 'startTime', $startTimeDateTime );
+		$this->assertNotEquals(
+			$startTimeDateTime,
+			$this->subject->getStartTime()
+		);
+		$this->subject->setStartTime( $startTimeDateTime );
+		$this->assertEquals(
+			$startTimeDateTime,
+			$this->subject->getStartTime()
+		);
 
 		$this->subject->setStartTime( $startTimeTimestamp );
 		$this->assertEquals(
