@@ -269,7 +269,7 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function childrenOfHiddenAreDefaultHidden() {
+	public function childrenOfHiddenAreHiddenByDefault() {
 		$pageMocks = $this->initTestTree();
 
 		// default is to hide children of hidden, so when we hide oneTwo, oneTwoOne should be hidden to
@@ -301,6 +301,21 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 				$this->assertFalse( $wrappedPage->wrappedElementIsHidden() );
 			}
 		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function configuration() {
+		$this->assertNull(
+			$this->subject->getConfiguration('foo')
+		);
+
+		$this->subject->addConfiguration('foo', 'bazFoo');
+		$this->assertEquals(
+			'bazFoo',
+			$this->subject->getConfiguration('foo')
+		);
 	}
 }
 

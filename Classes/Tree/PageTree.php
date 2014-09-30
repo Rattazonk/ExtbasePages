@@ -53,6 +53,9 @@ class PageTree {
 	 */
 	protected $pageRepository;
 
+	/** @var array **/
+	protected $configuration = array();
+
 	public function getFirstLevelPages() {
 		$this->ensureInitialization();
 		return $this->firstLevelPages;
@@ -148,5 +151,17 @@ class PageTree {
 			}
 		}
 		return $level;
+	}
+
+	public function getConfiguration( $name ) {
+		if( isset($this->configuration[$name]) ) {
+			return $this->configuration[$name];
+		} else {
+			return NULL;
+		}
+	}
+
+	public function addConfiguration( $name, $value ) {
+		$this->configuration[$name] = $value;
 	}
 }
