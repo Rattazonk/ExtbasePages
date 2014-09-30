@@ -317,5 +317,41 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			$this->subject->getConfiguration('foo')
 		);
 	}
+
+	/**
+	 * @test
+	 */
+	public function dontHideChildrenOfHidden() {
+		$pageMocks = $this->initTestTree();
+
+		$this->subject->addConfiguration('hideChildrenOfHidden', FALSE);
+
+		$filter = $this->getMockForAbstractClass(
+			'Rattazonk\Extbasepages\Tree\Filter\AbstractFilter',
+			array(), '', TRUE, TRUE, TRUE,
+			array('filter')
+		);
+
+		$filter->expects($this->any())
+			->method('filter')
+			->will($this->returnCallback(
+				function() use ($pageMocks) {
+					$currentWrapper = array_shift(func_get_args());
+					$currentPage = $currentWrapper->getWrappedElement();
+					if( $currentPage === $pageMocks['oneTwo'] ) {
+						$currentWrapper->hideWrappedElement();
+					}
+				}));
+		$this->subject->addFilter( $filter );
+		$this->subject->getFirstLevelPages();
+
+		foreach( $this->subject->getFlattenedPages() as $wrappedPage ) {
+			if( $wrappedPage->getWrappedElement() === $pageMocks['oneTwo'] ) {
+				$this->assertTrue( $wrappedPage->wrappedElementIsHidden(), 'This element should be directly hidden' );
+			} else {
+				$this->assertFalse( $wrappedPage->wrappedElementIsHidden(), 'This element shouldnt be hidden, because it wasnt be hidden directly.' );
+			}
+		}
+	}
 }
 

@@ -54,7 +54,9 @@ class PageTree {
 	protected $pageRepository;
 
 	/** @var array **/
-	protected $configuration = array();
+	protected $configuration = array(
+		'hideChildrenOfHidden' => TRUE
+	);
 
 	public function getFirstLevelPages() {
 		$this->ensureInitialization();
@@ -71,7 +73,9 @@ class PageTree {
 		);
 		$firstLevelPages = $this->wrapTree( $firstLevelPages );
 		$this->filterTree( $firstLevelPages );
-		$this->hideChildrenOfHidden( $firstLevelPages );
+		if( $this->getConfiguration('hideChildrenOfHidden') ) {
+			$this->hideChildrenOfHidden( $firstLevelPages );
+		}
 
 		$this->firstLevelPages = $firstLevelPages;
 		$this->initialized = TRUE;
