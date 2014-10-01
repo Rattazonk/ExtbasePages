@@ -53,6 +53,12 @@ class PageTree {
 	 */
 	protected $pageRepository;
 
+	/**
+	 * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+	 * @inject
+	 */
+	protected $signalSlotDispatcher;
+
 	/** @var array **/
 	protected $configuration = array(
 		'hideChildrenOfHidden' => TRUE
@@ -115,6 +121,10 @@ class PageTree {
 	}
 
 	public function filterTree( $firstLevel ) {
+		if( !$this->filtersInitialized ) {
+			// the filter should call the addFilter method
+			$this->signalSlotDispatcher->dispatch(__CLASS__, 'initFilters', array($this));
+		}
 		$filters = $this->filters;
 		$this->forEachElement( function( $page ) use ($filters) {
 				foreach( $filters as $filter ) {

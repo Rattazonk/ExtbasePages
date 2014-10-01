@@ -353,5 +353,32 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			}
 		}
 	}
+
+	/**
+	 * @test
+	 */
+	public function filterSignalSlot() {
+		$pageMocks = $this->initTestTree();
+		// check that signalSlotDispatcher is called at initialization
+		// and that the pageTree is submitted as argument, to add a filter
+		$signalSlotDispatcherMock = $this->getMock(
+			'TYPO3\CMS\Extbase\SignalSlot\Dispatcher',
+			array('dispatch')
+		);
+		$signalSlotDispatcherMock->expects($this->once())
+			->method('dispatch')
+			->with(
+				$this->equalTo('Rattazonk\Extbasepages\Tree\PageTree'),
+				$this->equalTo('initFilters'),
+				$this->equalTo(array($this->subject))
+			);
+		
+		$this->inject(
+			$this->subject,
+			'signalSlotDispatcher',
+			$signalSlotDispatcherMock
+		);
+		$this->subject->getFirstLevelPages();
+	}
 }
 

@@ -20,7 +20,6 @@ class PageTreeController extends AbstractWidgetController {
 	 */
 	protected $pageRepository;
 
-
 	public function indexAction() {
 		$this->initConfiguration();
 		$tree = $this->getTree();
