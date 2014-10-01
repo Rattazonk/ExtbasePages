@@ -34,8 +34,8 @@ class OnlyFilter extends AbstractFilter {
 	 * @return boolean
 	 */
 	protected function isResponsible() {
-		return isset($this->widgetConfiguration['onlyDoktype'])
-			&& !empty($this->widgetConfiguration['onlyDoktype']);
+		return isset($this->treeConfiguration['onlyDoktypes'])
+			&& !empty($this->treeConfiguration['onlyDoktypes']);
 	}
 
 	/**
@@ -43,6 +43,6 @@ class OnlyFilter extends AbstractFilter {
 	 * @return boolean
 	 */
 	protected function elementIsAllowed( ElementWrapper $element ) {
-		return in_array($element->getDoktype(), $this->widgetConfiguration['onlyDoktype']);
+		return in_array($element->getDoktype(), $this->treeConfiguration['onlyDoktypes']);
 	}
 }
