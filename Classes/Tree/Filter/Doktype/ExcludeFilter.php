@@ -34,8 +34,9 @@ class ExcludeFilter extends AbstractFilter {
 	 * @return boolean
 	 */
 	protected function isResponsible() {
-		return isset($this->widgetConfiguration['excludeDoktype'])
-			&& !empty($this->widgetConfiguration['excludeDoktype']);
+		return isset($this->treeConfiguration['excludeDoktypes'])
+			&& is_array($this->treeConfiguration['excludeDoktypes'])
+			&& !empty($this->treeConfiguration['excludeDoktypes']);
 	}
 
 	/**
