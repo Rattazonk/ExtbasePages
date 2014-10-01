@@ -82,4 +82,33 @@ class AbstractFilterTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 		$this->subject->registerIfResponsible( $pageTreeMock );
 	}
+
+	/**
+	 * @test
+	 */
+	public function hideNotAllowedElements() {
+		$this->subject->expects($this->at(0))
+			->method('elementIsAllowed')
+			->will($this->returnValue(TRUE));
+		$elementMock = $this->getMockBuilder('Rattazonk\Extbasepages\Tree\ElementWrapper')
+			->disableOriginalConstructor()
+			//->setMethods(array('findByParent'))
+			->getMock();
+		$elementMock->expects($this->never())
+			->method('hideWrappedElement');
+	
+		$this->subject->filter( $elementMock );
+
+		$this->subject->expects($this->at(0))
+			->method('elementIsAllowed')
+			->will($this->returnValue(FALSE));
+		$elementMock = $this->getMockBuilder('Rattazonk\Extbasepages\Tree\ElementWrapper')
+			->disableOriginalConstructor()
+			//->setMethods(array('findByParent'))
+			->getMock();
+		$elementMock->expects($this->once())
+			->method('hideWrappedElement');
+
+		$this->subject->filter( $elementMock );
+	}
 }
