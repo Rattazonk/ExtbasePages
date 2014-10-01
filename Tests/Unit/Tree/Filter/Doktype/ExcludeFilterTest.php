@@ -86,4 +86,54 @@ class ExcludeFilterTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 		$this->subject->registerIfResponsible( $pageTreeMock );
 	}
+
+	/**
+	 * @test
+	 */
+	public function notFilter() {
+		$elementMock = $this->getMockBuilder('Rattazonk\Extbasepages\Tree\ElementWrapper')
+			->disableOriginalConstructor()
+			->setMethods(array('getDoktype'))
+			->getMock();
+
+		$elementMock->expects($this->once())
+			->method('getDoktype')
+			->will($this->returnValue('bazFoo'));
+
+		$elementMock->expects($this->never())
+			->method('hideWrappedElement');
+
+		$this->inject(
+			$this->subject,
+			'treeConfiguration',
+			array('excludeDoktypes' => array('bar', 'foo'))
+		);
+
+		$this->subject->filter($elementMock);
+	}
+
+	/**
+	 * @test
+	 */
+	public function filter() {
+		$elementMock = $this->getMockBuilder('Rattazonk\Extbasepages\Tree\ElementWrapper')
+			->disableOriginalConstructor()
+			->setMethods(array('getDoktype', 'hideWrappedElement'))
+			->getMock();
+
+		$elementMock->expects($this->once())
+			->method('getDoktype')
+			->will($this->returnValue('bazFoo'));
+
+		$elementMock->expects($this->once())
+			->method('hideWrappedElement');
+
+		$this->inject(
+			$this->subject,
+			'treeConfiguration',
+			array('excludeDoktypes' => array('bar', 'foo', 'bazFoo'))
+		);
+
+		$this->subject->filter($elementMock);
+	}
 }

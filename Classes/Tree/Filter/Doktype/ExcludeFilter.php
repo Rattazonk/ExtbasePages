@@ -44,6 +44,6 @@ class ExcludeFilter extends AbstractFilter {
 	 * @return boolean
 	 */
 	protected function elementIsAllowed( ElementWrapper $element ) {
-		return !in_array($element->getDoktype(), $this->widgetConfiguration['excludeDoktype']);
+		return !in_array($element->getDoktype(), $this->treeConfiguration['excludeDoktypes']);
 	}
 }
