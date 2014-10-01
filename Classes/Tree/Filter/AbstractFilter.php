@@ -2,7 +2,7 @@
 namespace Rattazonk\Extbasepages\Tree\Filter;
 
 use \Rattazonk\Extbasepages\Tree\ElementWrapper;
-use \Rattazonk\Extbasepages\ViewHelpers\Widget\Controller\PageTreeController;
+use \Rattazonk\Extbasepages\Tree\PageTree;
 
 /***************************************************************
  *
@@ -31,21 +31,21 @@ use \Rattazonk\Extbasepages\ViewHelpers\Widget\Controller\PageTreeController;
 
 abstract class AbstractFilter {
 	/** @var array **/
-	protected $widgetConfiguration = array();
-	/** @var Rattazonk\Extbasepages\ViewHelpers\Widget\Controller\PageTreeController **/
-	protected $pageTreeController;
+	protected $treeConfiguration = array();
+	/** @var Rattazonk\Extbasepages\Tree\PageTree **/
+	protected $pageTree;
 
 	/**
-	 * @param Rattazonk\Extbasepages\ViewHelpers\Widget\Controller\PageTreeController
+	 * @param Rattazonk\Extbasepages\Tree\PageTree
 	 * @param array $widgetConfiguration
 	 * @return void
 	 */
-	public function registerIfResponsible( PageTreeController $pageTreeController) {
-		$this->pageTreeController = $pageTreeController;
-		$this->widgetConfiguration = $pageTreeController->getWidgetConfiguration();
+	public function registerIfResponsible( PageTree $pageTree) {
+		$this->pageTree = $pageTree;
+		$this->treeConfiguration = $pageTree->getConfiguration();
 
-		if( $this->isResponsible($pageTreeController, $widgetConfiguration) ) {
-			$pageTreeController->addTreeFilter( $this );
+		if( $this->isResponsible() ) {
+			$pageTree->addFilter( $this );
 		}
 	}
 

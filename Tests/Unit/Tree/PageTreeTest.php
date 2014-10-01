@@ -316,6 +316,10 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			'bazFoo',
 			$this->subject->getConfiguration('foo')
 		);
+		$this->assertContains(
+			'bazFoo',
+			$this->subject->getConfiguration()
+		);
 	}
 
 	/**

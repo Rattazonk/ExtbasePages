@@ -167,8 +167,16 @@ class PageTree {
 		return $level;
 	}
 
-	public function getConfiguration( $name ) {
-		if( isset($this->configuration[$name]) ) {
+	/**
+	 * returns a specific configuration when name is provided
+	 *
+	 * @param string name
+	 * @return array
+	 */
+	public function getConfiguration( $name = NULL ) {
+		if( $name === NULL ) {
+			return $this->configuration;
+		} elseif( isset($this->configuration[$name]) ) {
 			return $this->configuration[$name];
 		} else {
 			return NULL;
