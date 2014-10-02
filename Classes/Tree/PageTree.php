@@ -64,6 +64,18 @@ class PageTree {
 		'hideChildrenOfHidden' => TRUE
 	);
 
+	/** @var int **/
+	protected $pid;
+
+	/**
+	 * sets the root page id for this tree
+	 * @param int $pid
+	 * @return void
+	 */
+	public function setPid( $pid ) {
+		$this->pid = $pid;
+	}
+
 	public function getFirstLevelPages() {
 		$this->ensureInitialization();
 		return $this->firstLevelPages;
@@ -74,9 +86,7 @@ class PageTree {
 			return TRUE;
 		}
 
-		$firstLevelPages = $this->pageRepository->findByParent(
-			(int) $GLOBALS['TSFE']->id
-		);
+		$firstLevelPages = $this->getPages();
 		$firstLevelPages = $this->wrapTree( $firstLevelPages );
 		$this->filterTree( $firstLevelPages );
 		if( $this->getConfiguration('hideChildrenOfHidden') ) {
@@ -85,6 +95,15 @@ class PageTree {
 
 		$this->firstLevelPages = $firstLevelPages;
 		$this->initialized = TRUE;
+	}
+
+	/**
+	 * retrieves the pages for the first level completely clean
+	 * @return TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+	 */
+	protected function getPages() {
+		$pid = (int) ((int)$this->pid > 0 ? $this->pid : $GLOBALS['TSFE']->id);
+		return $this->pageRepository->findByParent( $pid );
 	}
 
 	protected function wrapTree( $currentLevel ) {

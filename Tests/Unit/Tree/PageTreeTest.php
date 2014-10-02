@@ -384,5 +384,18 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		);
 		$this->subject->getFirstLevelPages();
 	}
+
+	/**
+	 * @test
+	 */
+	public function initializedUnderGivenPageId() {
+		$this->pageRepositoryMock->expects($this->once())
+			->method('findByParent')
+			->with( $this->equalTo( 1337 ) )
+			->will( $this->returnValue(array()));
+
+		$this->subject->setPid( 1337 );
+		$this->subject->getFirstLevelPages();
+	}
 }
 
