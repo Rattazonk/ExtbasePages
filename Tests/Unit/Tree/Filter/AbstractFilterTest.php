@@ -92,7 +92,6 @@ class AbstractFilterTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			->will($this->returnValue(TRUE));
 		$elementMock = $this->getMockBuilder('Rattazonk\Extbasepages\Tree\ElementWrapper')
 			->disableOriginalConstructor()
-			//->setMethods(array('findByParent'))
 			->getMock();
 		$elementMock->expects($this->never())
 			->method('hideWrappedElement');
@@ -104,7 +103,6 @@ class AbstractFilterTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			->will($this->returnValue(FALSE));
 		$elementMock = $this->getMockBuilder('Rattazonk\Extbasepages\Tree\ElementWrapper')
 			->disableOriginalConstructor()
-			//->setMethods(array('findByParent'))
 			->getMock();
 		$elementMock->expects($this->once())
 			->method('hideWrappedElement');
