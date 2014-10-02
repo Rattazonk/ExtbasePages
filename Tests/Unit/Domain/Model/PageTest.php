@@ -153,4 +153,30 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			$this->subject->getStartTime()
 		);
 	}
+
+	/**
+	 * @test
+	 */
+	public function getSetCreationDate() {
+		$creationDateTimestamp = 1411847530;
+		$creationDateDateTime = new \DateTime();
+		$creationDateDateTime->setTimestamp( $creationDateTimestamp );
+
+		$this->assertNotEquals(
+			$creationDateDateTime,
+			$this->subject->getCreationDate()
+		);
+		$this->subject->setCreationDate( $creationDateDateTime );
+		$this->assertEquals(
+			$creationDateDateTime,
+			$this->subject->getCreationDate(),
+			'The returned creation date should be equal to the setted one'
+		);
+
+		$this->subject->setCreationDate( $creationDateTimestamp );
+		$this->assertEquals(
+			$creationDateDateTime,
+			$this->subject->getCreationDate()
+		);
+	}
 }

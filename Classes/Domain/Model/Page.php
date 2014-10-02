@@ -177,13 +177,17 @@ class Page
 	 * @return DateTime
 	 */
 	public function getStartTime() {
-		if( $this->startTime === 0 ) {
-			$startTime = NULL;
+		return $this->dateTimeFromTimestamp( $this->startTime );
+	}
+
+	protected function dateTimeFromTimestamp( $timestamp ) {
+		if( $timestamp === 0 ) {
+			$dateTime = NULL;
 		} else {
-			$startTime = new \DateTime();
-			$startTime->setTimestamp( $this->startTime );
+			$dateTime = new \DateTime();
+			$dateTime->setTimestamp( $timestamp );
 		}
-		return $startTime;
+		return $dateTime;
 	}
 
 	/**
@@ -191,14 +195,18 @@ class Page
 	 * @return void
 	 */
 	public function setCreationDate( $creationDate ) {
-		$this->creationDate = $creationDate->getTimestamp();
+		if( $creationDate INSTANCEOF \DateTime ) {
+			$this->creationDate = $creationDate->getTimestamp();
+		} else {
+			$this->creationDate = $creationDate;
+		}
 	}
 
 	/**
 	 * @return DateTime
 	 */
 	public function getCreationDate() {
-		return new \DateTime( date('c', $this->creationDate) );
+		return $this->dateTimeFromTimestamp( $this->creationDate );
 	}
 
 	/**
