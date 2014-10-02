@@ -174,6 +174,7 @@ class ElementWrapperTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			'childrenOfWrappedElement',
 			$this->subject->getChildren()
 		);
+		$this->assertTrue( $this->subject->getWrappedElementIsHidden() );
 	}
 
 }
