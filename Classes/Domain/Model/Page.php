@@ -102,8 +102,6 @@ class Page
 		if( $content INSTANCEOF \TYPO3\CMS\Extbase\Persistence\ObjectStorage ) {
 			$content->rewind();
 			return $content->current();
-		} else if ( is_array( $content ) ) {
-			return arra_shift( array_values( $content ) );
 		} else {
 			return NULL;
 		}
@@ -222,7 +220,12 @@ class Page
 	 * @return boolean
 	 */
 	public function hasChildren() {
-		return !empty($this->getChildren());
+		$children = $this->getChildren();
+		if( $children INSTANCEOF \Countable ) {
+			return $children->count() > 0;
+		} else {
+			return !empty($this->getChildren());
+		}
 	}
 
 }

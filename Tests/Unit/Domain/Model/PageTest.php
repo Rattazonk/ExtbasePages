@@ -132,6 +132,31 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
+	public function hasChildren() {
+		$this->assertFalse(
+			$this->subject->hasChildren(),
+			'This page is initialized without subpages'
+		);
+
+		$objectStorage = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		$this->subject->setSubPages( $objectStorage );
+		$this->assertFalse(
+			$this->subject->hasChildren(),
+			'An empty objectstorage means that there are no children'
+		);
+
+		$subPageMock = $this->getMock( 'Rattazonk\Extbasepages\Domain\Model\Page' );
+		$objectStorage->attach( $subPageMock );
+		$this->assertTrue(
+			$this->subject->hasChildren(),
+			'This objectstorage isnt empty anymore'
+		);
+	}
+
+
+	/**
+	 * @test
+	 */
 	public function getSetStartTime() {
 		$startTimeTimestamp = 1411847530;
 		$startTimeDateTime = new \DateTime();
