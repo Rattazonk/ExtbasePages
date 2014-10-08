@@ -98,7 +98,7 @@ class Under200FilterTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 		$elementMock->expects($this->once())
 			->method('getDoktype')
-			->will($this->returnValue(199));
+			->will($this->returnValue(200));
 
 		$elementMock->expects($this->never())
 			->method('hideWrappedElement');
@@ -123,7 +123,7 @@ class Under200FilterTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 		$elementMock->expects($this->once())
 			->method('getDoktype')
-			->will($this->returnValue('bazFoo'));
+			->will($this->returnValue(200));
 
 		$elementMock->expects($this->once())
 			->method('hideWrappedElement');
@@ -131,7 +131,7 @@ class Under200FilterTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$this->inject(
 			$this->subject,
 			'treeConfiguration',
-			array('excludeDoktypes' => array('bar', 'foo', 'bazFoo'))
+			array('excludeDoktypesOver199' => TRUE)
 		);
 
 		$this->subject->filter($elementMock);

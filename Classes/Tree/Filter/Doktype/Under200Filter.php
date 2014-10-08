@@ -34,8 +34,8 @@ class Under200Filter extends AbstractFilter {
 	 * @return boolean
 	 */
 	protected function isResponsible() {
-		return isset($this->widgetConfiguration['excludeDoktypesOver199'])
-			&& $this->widgetConfiguration['excludeDoktypesOver199'];
+		return isset($this->treeConfiguration['excludeDoktypesOver199'])
+			&& $this->treeConfiguration['excludeDoktypesOver199'];
 	}
 
 	/**
