@@ -1,5 +1,6 @@
 <?php
 namespace Rattazonk\Extbasepages\ViewHelpers;
+use \Rattazonk\Extbasepages\Tree\PageTree;
 
 class RenderTreeViewHelper
 	extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
@@ -23,12 +24,17 @@ class RenderTreeViewHelper
 	protected $currentLevel = 0;
 
 	/**
-	 * @param array $tree
+	 * @var array
+	 */
+	protected $currentLevelElements = array();
+
+	/**
+	 * @param Rattazonk\Extbasepages\Tree\PageTree $tree
 	 * @return string
 	 */
-	public function render($tree = array()) {
+	public function render(PageTree $tree) {
 		$this->initRecursionViewHelpers( $this->childNodes );
-		return $this->renderLevel( $tree );
+		return $this->renderLevel( $tree->getFirstLevelPages() );
 	}
 
 	/**
@@ -56,13 +62,13 @@ class RenderTreeViewHelper
 	 * @return string
 	 */
 	public function renderLevel( $elements ) {
-
 		$this->currentLevel++;
 		$output = '';
 		$renderingContext = $this->getNewRenderingContext();
 
 		foreach( $this->getRenderLevelsNodes() as $node ) {
-			$node->getUninitializedViewHelper()->setLevelElements( $elements );
+			// we dont set them because we can reach the viewhelper after the first evaluation
+			$this->currentLevelElements = $elements;
 			$output .= $node->evaluate($renderingContext);
 		}
 
@@ -71,17 +77,25 @@ class RenderTreeViewHelper
 		return $output;
 	}
 
+	protected function getNewRenderingContext() {
+		// dont use a new rendering context, because we cant render partials without a set view
+		// why should we create a new one?
+		//return $this->renderingContext;
+		// we need a new ine because of the variable conflicts
+		// but we need the view in viewhelpervariablecontainer
+		$renderingContext = $this->renderingContext->getObjectManager()->get('\TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface');
+		$renderingContext->setControllerContext( $this->renderingContext->getControllerContext() );
+		$renderingContext->getViewhelperVariableContainer()->setView(
+			$this->renderingContext->getViewhelperVariableContainer()->getView()
+		);
+		return $renderingContext;
+	}
+
 	protected function getRenderLevelsNodes() {
 		if( $this->renderLevelsNodes === NULL ){
 			$this->initRenderLevelsNodes();
 		}
 		return $this->renderLevelsNodes;
-	}
-
-	protected function getNewRenderingContext() {
-			$renderingContext = $this->renderingContext->getObjectManager()->get('\TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface');
-			$renderingContext->setControllerContext( $this->renderingContext->getControllerContext() );
-			return $renderingContext;
 	}
 
 	/**
@@ -115,5 +129,9 @@ class RenderTreeViewHelper
 	 */
 	public function setChildNodes(array $childNodes) {
 		$this->childNodes = $childNodes;
+	}
+
+	public function getCurrentLevelElements() {
+		return $this->currentLevelElements;
 	}
 }

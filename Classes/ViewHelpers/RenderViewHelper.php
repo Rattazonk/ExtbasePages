@@ -27,42 +27,26 @@ namespace Rattazonk\Extbasepages\ViewHelpers;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class RenderSubLevelViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
-
-
-	/**
-	 * @var RenderTreeViewHelper
-	 */
-	protected $renderTreeViewHelper;
+class RenderViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\RenderViewHelper {
 
 	/**
-	 * @param mixed $tree
+	 * @param \ArrayAccess $contents
 	 * @return string the rendered string
 	 **/
-	public function render($tree) {
-		$elements = $this->initSubTreeElements( $tree );
-
-		if(count($elements) > 0) {
-			return $this->renderTreeViewHelper->renderLevel( $elements );
-		} else {
-			return '';
+	public function render($contents = array()) {
+		$output = '';
+		foreach( $contents as $content ){
+			$output .= $this->renderContent( $content );
 		}
+		return $output;
 	}
 
-	protected function initSubTreeElements( $tree ) {
-		if( method_exists($tree, 'getChildren') ) {
-			return $tree->getChildren();
-		} else {
-			return $tree;
-		}
-	}
-
-	/**
-	 * @param RenderTreeViewHelper
-	 * @return void
-	 */
-	public function setRenderTreeViewHelper( $renderTreeViewHelper ) {
-		$this->renderTreeViewHelper = $renderTreeViewHelper;
+	protected function renderContent( $content ){
+		return parent::render(
+			NULL, // section
+			$content->getCType(),
+			array('content' => $content)
+		);
 	}
 
 }

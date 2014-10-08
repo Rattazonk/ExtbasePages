@@ -7,13 +7,6 @@ use \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
 
 class PageTreeController extends AbstractWidgetController {
 
-	/** @var int **/
-	protected $startPid = 0;
-	/** @var string **/
-	protected $treeName;
-	/** @var array **/
-	protected $treeFilters = array();
-
 	/**
 	 * @var Rattazonk\Extbasepages\Tree\PageTree
 	 * @inject
@@ -21,15 +14,18 @@ class PageTreeController extends AbstractWidgetController {
 	protected $pageTree;
 
 	public function indexAction() {
-		$tree = $this->getTree();
-		$this->view->assign('treeAlias', array($this->treeName => $tree) );
+		$this->initPageTree();
+
+		$this->view->assign(
+			'treeAlias',
+			array($this->widgetConfiguration['as'] => $this->pageTree)
+		);
 	}
 
-	protected function getTree() {
+	protected function initPageTree() {
 		foreach( $this->widgetConfiguration as $name => $value ) {
 			$this->pageTree->addConfiguration($name, $value);
 		}
-		return $tree;
 	}
 }
 ?>

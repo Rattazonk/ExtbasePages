@@ -15,7 +15,7 @@ config.tx_extbase.persistence.classes {
 			tableName = tt_content					
 			columns {
 				pid.mapOnProperty = page
-				ctype.mapOnProperty = type
+				CType.mapOnProperty = type
 				bodytext.mapOnProperty = bodyText
 			}
 		}

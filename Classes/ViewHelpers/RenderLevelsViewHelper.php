@@ -40,20 +40,28 @@ class RenderLevelsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVi
 	protected $levelElements = array();
 
 	/**
+	 * When we are rendering nested levels there will be a conflict between the same named level
+	 * elements ("as"). So we have to store them while we are rendering a subordinated level
+	 *
+	 * @var array
+	 */
+	protected $aliasArchive = array();
+
+	/**
 	 * @param int $equal
 	 * @param int $lowerThan
 	 * @param int $greaterThan
-	 * @param boolean $orEqual
+	 * @param boolean $orEquals
 	 * @param string $as
 	 * @return string the rendered string
 	 **/
-	public function render($equal = NULL, $greaterThan = NULL, $lowerThan = NULL, $orEqual = FALSE, $as = 'subTree') {
+	public function render($equal = NULL, $greaterThan = NULL, $lowerThan = NULL, $orEquals = FALSE, $as = 'subTree') {
 		$this->currentLevel = $this->renderTreeViewHelper->getCurrentLevel();
 
 		$output = '';
 		if( $this->isResponsible() ) {
 			$output = $this->renderChildrenWithAlias();
-		}
+		} 
 
 		return $output;
 	}
@@ -89,11 +97,9 @@ class RenderLevelsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVi
 	}
 
 	protected function renderChildrenWithAlias() {
-
-		$this->templateVariableContainer->add($this->arguments['as'], $this->levelElements);
+		$this->templateVariableContainer->add($this->arguments['as'], $this->getLevelElements());
 		$output = $this->renderChildren();
-		$this->templateVariableContainer->remove($this->arguments['as']);
-
+		$this->templateVariableContainer->remove( $this->arguments['as'] );
 		return $output;
 	}
 
@@ -105,7 +111,7 @@ class RenderLevelsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVi
 		$this->renderTreeViewHelper = $renderTreeViewHelper;
 	}
 
-	public function setLevelElements( $elements ) {
-		$this->levelElements = $elements;
+	public function getLevelElements() {
+		return $this->renderTreeViewHelper->getCurrentLevelElements();
 	}
 }
