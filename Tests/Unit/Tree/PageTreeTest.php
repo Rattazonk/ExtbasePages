@@ -306,6 +306,38 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
+	public function removeHiddenElementsWithoutVisibleChildren() {
+		$pageMocks = $this->initTestTree();
+
+		// default is to hide children of hidden, so when we hide oneTwo, oneTwoOne should be hidden to
+		$filter = $this->getMockForAbstractClass(
+			'Rattazonk\Extbasepages\Tree\Filter\AbstractFilter',
+			array(), '', TRUE, TRUE, TRUE,
+			array('filter')
+		);
+
+		$filter->expects($this->any())
+			->method('filter')
+			->will($this->returnCallback(
+				function() use ($pageMocks) {
+					$currentWrapper = array_shift(func_get_args());
+					$currentPage = $currentWrapper->getWrappedElement();
+					if( $currentPage === $pageMocks['oneTwo'] ) {
+						$currentWrapper->hideWrappedElement();
+					}
+				}));
+		$this->subject->addFilter( $filter );
+		$this->subject->getFirstLevelPages();
+
+		$this->assertCount(
+			$this->pageCount - 2,
+			$this->subject->getFlattenedPages()
+		);
+	}
+
+	/**
+	 * @test
+	 */
 	public function configuration() {
 		$this->assertNull(
 			$this->subject->getConfiguration('foo')

@@ -61,7 +61,9 @@ class PageTree {
 
 	/** @var array **/
 	protected $configuration = array(
-		'hideChildrenOfHidden' => TRUE
+		'hideChildrenOfHidden' => TRUE,
+		'excludeDoktypesOver199' => TRUE,
+		'removeHiddenSubTrees' => TRUE
 	);
 
 	/** @var int **/
@@ -89,8 +91,11 @@ class PageTree {
 		$firstLevelPages = $this->getPages();
 		$firstLevelPages = $this->wrapTree( $firstLevelPages );
 		$this->filterTree( $firstLevelPages );
-		if( $this->getConfiguration('hideChildrenOfHidden') ) {
+		if( $this->getConfiguration('hideChildrenOfHidden') ){
 			$this->hideChildrenOfHidden( $firstLevelPages );
+		}
+		if( !$this->getConfiguration('removeHiddenSubTrees') ){
+			$this->removeHiddenSubTrees($firstLevelPages);
 		}
 
 		$this->firstLevelPages = $firstLevelPages;
@@ -184,6 +189,22 @@ class PageTree {
 			}
 		}
 		return $level;
+	}
+
+	/**
+	 * removes all elements which are hidden and have no visible descendants
+	 *
+	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+	 * @return void
+	 */
+	protected function removeHiddenSubTrees( $tree ) {
+		foreach( $tree as $element ){
+			// only removes hidden children without children (recursively upwardly)
+			$this->removeHiddenSubTrees( $element->getChildren() );
+			if( $element->wrappedElementIsHidden() && !$element->hasChildren() ){
+				$tree->detach( $element );
+			}
+		}
 	}
 
 	/**
