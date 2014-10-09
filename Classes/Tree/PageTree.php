@@ -94,7 +94,7 @@ class PageTree {
 		if( $this->getConfiguration('hideChildrenOfHidden') ){
 			$this->hideChildrenOfHidden( $firstLevelPages );
 		}
-		if( !$this->getConfiguration('removeHiddenSubTrees') ){
+		if( $this->getConfiguration('removeHiddenSubTrees') ){
 			$this->removeHiddenSubTrees($firstLevelPages);
 		}
 

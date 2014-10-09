@@ -306,7 +306,7 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function removeHiddenElementsWithoutVisibleChildren() {
+	public function removeHiddenSubTrees() {
 		$pageMocks = $this->initTestTree();
 
 		// default is to hide children of hidden, so when we hide oneTwo, oneTwoOne should be hidden to
