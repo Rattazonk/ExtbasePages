@@ -31,10 +31,14 @@ class RenderViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\RenderViewHelper {
 
 	/**
 	 * @param \ArrayAccess $contents
+	 * @param Rattazonk\Extbasepages\Domain\Model\Content $content
 	 * @return string the rendered string
 	 **/
-	public function render($contents = array()) {
+	public function render($contents = array(), $content = NULL) {
 		$output = '';
+		if( $content !== NULL ){
+			array_push($contents, $content);
+		}
 		foreach( $contents as $content ){
 			$output .= $this->renderContent( $content );
 		}
