@@ -130,6 +130,10 @@ class Page
 		return $this->title;
 	}
 
+	public function getSpUrlTitle() {
+		return rawurlencode(strtolower(str_replace(' ', '-', $this->getTitle())));
+	}
+
 	/**
 	 * @param string
 	 * @return void

@@ -45,6 +45,9 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $header;
 
 	/** @var string **/
+	protected $headerLink;
+
+	/** @var string **/
 	protected $bodyText = '';
 
 	/** @var int **/
@@ -110,6 +113,21 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setHeader($header) {
 		$this->header = $header;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getHeaderLink() {
+		return $this->headerLink;
+	}
+
+	/**
+	 * @param string $headerLink
+	 * @return void
+	 */
+	public function setHeaderLink($headerLink) {
+		$this->headerLink = $headerLink;
 	}
 
 	/**
