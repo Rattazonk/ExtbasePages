@@ -60,7 +60,10 @@ class PageTree {
 	protected $signalSlotDispatcher;
 
 	/** @var array **/
-	protected $configuration = array(
+	protected $configuration = array();
+	
+	/** @var array **/
+	protected $defaultConfiguration = array(
 		'hideChildrenOfHidden' => TRUE,
 		'excludeDoktypesOver199' => TRUE,
 		'removeHiddenSubTrees' => TRUE
@@ -68,6 +71,15 @@ class PageTree {
 
 	/** @var int **/
 	protected $pid;
+
+	public function initializeObject() {
+		$this->reset();
+	}
+
+	public function reset() {
+		$this->configuration = $this->defaultConfiguration;
+		$this->initialized = FALSE;
+	}
 
 	/**
 	 * sets the root page id for this tree

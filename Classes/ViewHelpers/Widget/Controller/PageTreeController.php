@@ -23,6 +23,11 @@ class PageTreeController extends AbstractWidgetController {
 	}
 
 	protected function initPageTree() {
+		$this->pageTree->reset();
+		if( isset($this->widgetConfiguration['underPid'])
+		&& (int) $this->widgetConfiguration['underPid'] > -1 ) {
+			$this->pageTree->setPid( (int) $this->widgetConfiguration['underPid'] );
+		}
 		foreach( $this->widgetConfiguration as $name => $value ) {
 			$this->pageTree->addConfiguration($name, $value);
 		}

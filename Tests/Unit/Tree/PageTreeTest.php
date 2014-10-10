@@ -429,5 +429,28 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$this->subject->setPid( 1337 );
 		$this->subject->getFirstLevelPages();
 	}
+
+	/**
+	 * @test
+	 */
+	public function reset() {
+		$this->pageRepositoryMock->expects($this->exactly(2))
+			->method('findByParent')
+			->will($this->returnValue(array()));
+		$defaultConfiguration = $this->subject->getConfiguration();
+		$this->subject->addConfiguration('foo', 'bar');
+		$this->assertNotEquals(
+			$defaultConfiguration,
+			$this->subject->getConfiguration()
+		);
+		$this->subject->getFirstLevelPages();
+		$this->subject->getFirstLevelPages();
+		$this->subject->reset();
+		$this->subject->getFirstLevelPages();
+		$this->assertEquals(
+			$defaultConfiguration,
+			$this->subject->getConfiguration()
+		);
+	}
 }
 
