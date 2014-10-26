@@ -381,13 +381,19 @@ class PageTreeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$this->subject->addFilter( $filter );
 		$this->subject->getFirstLevelPages();
 
+		$found = FALSE;
 		foreach( $this->subject->getFlattenedPages() as $wrappedPage ) {
 			if( $wrappedPage->getWrappedElement() === $pageMocks['oneTwo'] ) {
+				$found = TRUE;
 				$this->assertTrue( $wrappedPage->wrappedElementIsHidden(), 'This element should be directly hidden' );
 			} else {
 				$this->assertFalse( $wrappedPage->wrappedElementIsHidden(), 'This element shouldnt be hidden, because it wasnt be hidden directly.' );
 			}
 		}
+
+		$this->assertTrue($found, 'There must be the hidden element');
+
+
 	}
 
 	/**

@@ -61,7 +61,7 @@ class PageTree {
 
 	/** @var array **/
 	protected $configuration = array();
-	
+
 	/** @var array **/
 	protected $defaultConfiguration = array(
 		'hideChildrenOfHidden' => TRUE,
@@ -100,9 +100,11 @@ class PageTree {
 			return TRUE;
 		}
 
+
 		$firstLevelPages = $this->getPages();
 		$firstLevelPages = $this->wrapTree( $firstLevelPages );
 		$this->filterTree( $firstLevelPages );
+
 		if( $this->getConfiguration('hideChildrenOfHidden') ){
 			$this->hideChildrenOfHidden( $firstLevelPages );
 		}
@@ -143,9 +145,9 @@ class PageTree {
 	}
 
 	public function getFlattenedPages() {
-		$this->ensureInitialization();
-
-		$flattenedPages = $this->objectManager->get( 'TYPO3\CMS\Extbase\Persistence\ObjectStorage' );
+		$flattenedPages = $this->objectManager->get(
+			'TYPO3\CMS\Extbase\Persistence\ObjectStorage'
+		);
 		$this->forEachElement(function($element) use (&$flattenedPages) {
 			$flattenedPages->attach( $element );
 		});
@@ -163,11 +165,11 @@ class PageTree {
 		}
 		$filters = $this->filters;
 		$this->forEachElement( function( $page ) use ($filters) {
-				foreach( $filters as $filter ) {
-					$filter->filter( $page );
-					if( $page->wrappedElementIsHidden() ) { break; }
-				}
-			},
+			foreach( $filters as $filter ) {
+				$filter->filter( $page );
+				if( $page->wrappedElementIsHidden() ) { break; }
+			}
+		},
 			$firstLevel
 		);
 	}
@@ -177,8 +179,8 @@ class PageTree {
 			if( $page->wrappedElementIsHidden() ) {
 				// hide children recursively
 				$this->forEachElement(function($childrenToHide) {
-						$childrenToHide->hideWrappedElement();
-					}, $page->getChildren()
+					$childrenToHide->hideWrappedElement();
+				}, $page->getChildren()
 				);
 				// stop searching, subtree already hidden
 				return FALSE;
