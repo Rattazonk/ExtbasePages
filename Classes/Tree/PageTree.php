@@ -100,7 +100,6 @@ class PageTree {
 			return TRUE;
 		}
 
-
 		$firstLevelPages = $this->getPages();
 		$firstLevelPages = $this->wrapTree( $firstLevelPages );
 		$this->filterTree( $firstLevelPages );

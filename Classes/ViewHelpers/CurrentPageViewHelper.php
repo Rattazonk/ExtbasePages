@@ -1,5 +1,5 @@
 <?php
-namespace Rattazonk\Extbasepages\Domain\Repository;
+namespace Rattazonk\Extbasepages\ViewHelpers;
 
 
 /***************************************************************
@@ -27,19 +27,27 @@ namespace Rattazonk\Extbasepages\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * The repository for Pages
- */
-class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
+class CurrentPageViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
-	public function initializeObject() {
-		$defaultQuerySettings = $this->objectManager->get('TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings');
-		$defaultQuerySettings->setRespectStoragePage(FALSE);
-		$this->setDefaultQuerySettings($defaultQuerySettings);
-	}
+  /**
+   * @var Rattazonk\Extbasepages\Domain\Repository\PageRepository
+   * @inject
+   */
+  protected $pageRepository;
 
-  public function findCurrentPage() {
-    return $this->findByUid( $GLOBALS['TSFE']->id );
+  /**
+   * @param string $as
+   * @return string the rendered string
+   **/
+  public function render($as = 'page') {
+    $this->templateVariableContainer->add($as, $this->getCurrentPage());
+    $output = $this->renderChildren();
+    $this->templateVariableContainer->remove( $as );
+    return $output;
+  }
+
+  protected function getCurrentPage() {
+    return $this->pageRepository->findCurrentPage();
   }
 
 }
