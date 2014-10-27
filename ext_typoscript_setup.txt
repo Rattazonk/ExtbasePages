@@ -17,6 +17,7 @@ config.tx_extbase.persistence.classes {
 				pid.mapOnProperty = page
 				CType.mapOnProperty = type
 				bodytext.mapOnProperty = bodyText
+				colPos.mapOnProperty = column
 			}
 		}
 	}

@@ -53,6 +53,9 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/** @var int **/
 	protected $layout;
 
+	/** @var int **/
+	protected $column;
+
 	/**
 	 * @return Rattazonk\Extbasepages\Domain\Model\Page
 	 */
@@ -158,5 +161,20 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setLayout($layout) {
 		$this->layout = $layout;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getColumn() {
+		return $this->column;
+	}
+
+	/**
+	 * @param int $column
+	 * @return void
+	 */
+	public function setColumn($column) {
+		$this->column = $column;
 	}
 }

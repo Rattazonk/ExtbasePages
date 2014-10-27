@@ -107,6 +107,19 @@ class Page
 		}
 	}
 
+  /**
+   * @param int $column
+   * @return array
+   */
+  public function getContentFromColumn($column) {
+    return array_filter(
+      $this->getContent()->toArray(),
+      function($contentElement) use ($column) {
+        return $contentElement->getColumn() == $column;
+      }
+    );
+  }
+
 	/**
 	 * @api
 	 * @param TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Page>

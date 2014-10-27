@@ -101,4 +101,13 @@ class ContentTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$this->_testGetterSetter( 'bodytext', 'fooBar' );
 	}
 
+
+	/**
+	 * Need the getter setter for other extensions, so I can test them implicitly
+	 *
+	 * @test
+	 */
+	public function getSetColumn() {
+		$this->_testGetterSetter( 'column', 1 );
+	}
 }

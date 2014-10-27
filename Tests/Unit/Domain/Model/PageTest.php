@@ -204,4 +204,64 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			$this->subject->getCreationDate()
 		);
 	}
+
+	/**
+	 * @test
+	 */
+	public function contentFromColumn() {
+    $mock0n1 = $this->getMock('Rattazonk\Domain\Model\Content', array('getColumn'));
+    $mock0n1->expects($this->any())->method('getColumn')->will(
+      $this->returnValue(0)
+    );
+    $mock1n1 = $this->getMock('Rattazonk\Domain\Model\Content', array('getColumn'));
+    $mock1n1->expects($this->any())->method('getColumn')->will(
+      $this->returnValue(1)
+    );
+    $mock0n2 = $this->getMock('Rattazonk\Domain\Model\Content', array('getColumn'));
+    $mock0n2->expects($this->any())->method('getColumn')->will(
+      $this->returnValue(0)
+    );
+    $mock1n2 = $this->getMock('Rattazonk\Domain\Model\Content', array('getColumn'));
+    $mock1n2->expects($this->any())->method('getColumn')->will(
+      $this->returnValue(1)
+    );
+    $contentMock = $this->getMock(
+      'TYPO3\CMS\Extbase\Persistence\ObjectStorage',
+      array('toArray')
+    );
+    $contentMock->expects($this->any())->method('toArray')
+      ->will($this->returnValue(array(
+        $mock0n1, $mock1n1, $mock0n2, $mock1n2
+      )));
+
+    $this->inject(
+      $this->subject,
+      'content',
+      $contentMock
+    );
+    $this->assertCount(
+      2,
+      $this->subject->getContentFromColumn(0)
+    );
+    $this->assertContains(
+      $mock0n1,
+      $this->subject->getContentFromColumn(0)
+    );
+    $this->assertContains(
+      $mock0n2,
+      $this->subject->getContentFromColumn(0)
+    );
+    $this->assertCount(
+      2,
+      $this->subject->getContentFromColumn(1)
+    );
+    $this->assertContains(
+      $mock1n1,
+      $this->subject->getContentFromColumn(1)
+    );
+    $this->assertContains(
+      $mock1n2,
+      $this->subject->getContentFromColumn(1)
+    );
+	}
 }
