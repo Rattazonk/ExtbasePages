@@ -21,4 +21,10 @@ config.tx_extbase.persistence.classes {
 			}
 		}
 	}
+  
+	Rattazonk\Extbasepages\Domain\Model\Content\Shortcut {
+    mapping.recordType = shortcut
+	}
+
+	Rattazonk\Extbasepages\Domain\Model\Content.subclasses.1414596636 = Rattazonk\Extbasepages\Domain\Model\Content\Shortcut
 }
