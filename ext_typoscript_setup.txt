@@ -23,8 +23,15 @@ config.tx_extbase.persistence.classes {
 	}
   
 	Rattazonk\Extbasepages\Domain\Model\Content\Shortcut {
-    mapping.recordType = shortcut
+    mapping {
+      # set the table name explicitly because we want to get
+      # its tca definitions for column mappings
+      # @see DataMapFactory::buildDataMapInternal
+      tableName = tt_content
+      recordType = shortcut
+    }
 	}
-
-	Rattazonk\Extbasepages\Domain\Model\Content.subclasses.1414596636 = Rattazonk\Extbasepages\Domain\Model\Content\Shortcut
+	Rattazonk\Extbasepages\Domain\Model\Content.subclasses {
+    1414596636 = Rattazonk\Extbasepages\Domain\Model\Content\Shortcut
+  }
 }

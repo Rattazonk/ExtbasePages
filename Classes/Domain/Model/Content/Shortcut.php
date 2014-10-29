@@ -30,5 +30,5 @@ namespace Rattazonk\Extbasepages\Domain\Model\Content;
 /**
  * Page
  */
-class Shortcut extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class Shortcut extends \Rattazonk\Extbasepages\Domain\Model\Content {
 }
