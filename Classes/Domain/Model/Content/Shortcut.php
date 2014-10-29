@@ -31,4 +31,57 @@ namespace Rattazonk\Extbasepages\Domain\Model\Content;
  * Page
  */
 class Shortcut extends \Rattazonk\Extbasepages\Domain\Model\Content {
+
+  /**
+   * @var Rattazonk\Extbasepages\Domain\Repository\ContentRepository
+   * @inject
+   */
+  protected $contentRepository;
+
+  /**
+   * @var TYPO3\CMS\Extbase\Persistence\ObjectStorage
+   * @inject
+   */
+  protected $recordsStorage;
+ 
+  /**
+   * @var boolean
+   */
+  protected $recordsInitialized = FALSE;
+
+  /**
+   * uninitialized records from db
+   *
+   * @var array
+   */
+  protected $records = array();
+
+  /**
+   * @return TYPO3\CMS\Extbase\Persistence\ObjectStorage
+   */
+  public function getRecords() {
+    if( !$this->recordsInitialized ){
+      $this->initRecords();
+    }
+    return $this->recordsStorage;
+  }
+
+  protected function initRecords() {
+    foreach( $this->records as $record ){
+      $recordUid = $this->getUidFromRecordString( $record );
+      $recordObject = $this->contentRepository->findByUid( $recordUid );
+      $this->recordsStorage->attach( $recordObject );
+    }
+
+    $this->recordsInitialized = TRUE;
+  }
+
+  /**
+   * @var string $recordString - string from the db
+   * @return int
+   */
+  protected function getUidFromRecordString( $recordString ) {
+    $lastUnderscorePos = strrpos($recordString, '_');
+    return substr($recordString, ++$lastUnderscorePos);
+  }
 }
