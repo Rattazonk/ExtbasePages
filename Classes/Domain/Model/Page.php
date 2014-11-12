@@ -86,6 +86,18 @@ class Page
 		return $this->subPages;
 	}
 
+	public function getVisibleSubPages() {
+		if( $this->visibleSubPages === NULL ){
+			$this->visibleSubPages = clone $this->getSubPages();
+			foreach( $this->visibleSubPages as $subPage ) {
+				if( !$subPage->isVisible() ){
+					$this->visibleSubPages->detach( $subPage );
+				}
+			}
+		}
+		return $this->visibleSubPages;
+	}
+
 	/**
 	 * @param TYPO3\CMS\Extbase\Persistence\ObjectStorage<Rattazonk\Extbasepages\Domain\Model\Content>
 	 */
