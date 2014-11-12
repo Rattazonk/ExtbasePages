@@ -111,6 +111,64 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
+	public function isVisible() {
+		$page = new \Rattazonk\Extbasepages\Domain\Model\Page();
+		$this->inject(
+			$page,
+			'hidden',
+			FALSE
+		);
+		$this->assertTrue( $page->isVisible() );
+
+		$this->inject(
+			$page,
+			'hidden',
+			TRUE
+		);
+		$this->assertFalse( $page->isVisible() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function getVisibleSubPages() {
+		$this->assertInstanceOf(
+			'TYPO3\CMS\Extbase\Persistence\ObjectStorage',
+			$this->subject->getVisibleSubPages()
+		);
+
+		$this->inject(
+			$this->subject,
+			'visibleSubPages',
+			NULL
+		);
+
+		$objectStorage = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		$subPageMockVisible = $this->getMock('Rattazonk\Extbasepages\Domain\Model\Page');
+		$subPageMockVisible->expects($this->once())
+			->method('isVisible')
+			->will($this->returnValue(TRUE));
+		$objectStorage->attach( $subPageMockVisible );
+
+		$subPageMockHidden = $this->getMock('Rattazonk\Extbasepages\Domain\Model\Page');
+		$subPageMockHidden->expects($this->once())
+			->method('isVisible')
+			->will($this->returnValue(FALSE));
+		$objectStorage->attach( $subPageMockHidden );
+
+		$this->inject(
+			$this->subject,
+			'subPages',
+			$objectStorage
+		);
+
+		$this->assertCount(1, $this->subject->getVisibleSubPages() );
+		$this->assertCount(2, $this->subject->getSubPages() );
+	}
+
+	/**
+	 * @test
+	 */
 	public function getFirstContentFromObjectStorage() {
 		$objectStorage = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		$contentMockOne = $this->getMock( 'Rattazonk\Extbasepages\Domain\Model\Content' );

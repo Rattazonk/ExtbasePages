@@ -65,6 +65,9 @@ class Page
 	/** @var int  **/
 	protected $creationDate;
 
+	/** @var boolean **/
+	protected $hidden;
+
 	/**
 	 * @param TYPO3\CMS\Extbase\Persistence\ObjectStorage
 	 */
@@ -81,6 +84,18 @@ class Page
 
 	public function getSubPages() {
 		return $this->subPages;
+	}
+
+	public function getVisibleSubPages() {
+		if( $this->visibleSubPages === NULL ){
+			$this->visibleSubPages = clone $this->getSubPages();
+			foreach( $this->visibleSubPages as $subPage ) {
+				if( !$subPage->isVisible() ){
+					$this->visibleSubPages->detach( $subPage );
+				}
+			}
+		}
+		return $this->visibleSubPages;
 	}
 
 	/**
@@ -245,4 +260,7 @@ class Page
 		}
 	}
 
+	public function isVisible() {
+		return !$this->hidden;
+	}
 }
