@@ -111,6 +111,26 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
+	public function isVisible() {
+		$page = new \Rattazonk\Extbasepages\Domain\Model\Page();
+		$this->inject(
+			$page,
+			'hidden',
+			FALSE
+		);
+		$this->assertTrue( $page->isVisible() );
+
+		$this->inject(
+			$page,
+			'hidden',
+			TRUE
+		);
+		$this->assertFalse( $page->isVisible() );
+	}
+
+	/**
+	 * @test
+	 */
 	public function getFirstContentFromObjectStorage() {
 		$objectStorage = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		$contentMockOne = $this->getMock( 'Rattazonk\Extbasepages\Domain\Model\Content' );

@@ -65,6 +65,9 @@ class Page
 	/** @var int  **/
 	protected $creationDate;
 
+	/** @var boolean **/
+	protected $hidden;
+
 	/**
 	 * @param TYPO3\CMS\Extbase\Persistence\ObjectStorage
 	 */
@@ -232,4 +235,7 @@ class Page
 		}
 	}
 
+	public function isVisible() {
+		return !$this->hidden;
+	}
 }
