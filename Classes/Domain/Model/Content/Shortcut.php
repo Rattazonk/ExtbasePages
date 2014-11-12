@@ -51,10 +51,11 @@ class Shortcut extends \Rattazonk\Extbasepages\Domain\Model\Content {
 
   /**
    * uninitialized records from db
+   * <table>_<uid>,<table>_<uid>...
    *
-   * @var array
+   * @var string
    */
-  protected $records = array();
+  protected $records = '';
 
   /**
    * @return TYPO3\CMS\Extbase\Persistence\ObjectStorage
@@ -67,10 +68,12 @@ class Shortcut extends \Rattazonk\Extbasepages\Domain\Model\Content {
   }
 
   protected function initRecords() {
-    foreach( $this->records as $record ){
+    foreach( explode(',', $this->records) as $record ){
       $recordUid = $this->getUidFromRecordString( $record );
       $recordObject = $this->contentRepository->findByUid( $recordUid );
-      $this->recordsStorage->attach( $recordObject );
+      if( $recordObject ) {
+        $this->recordsStorage->attach( $recordObject );
+      }
     }
 
     $this->recordsInitialized = TRUE;

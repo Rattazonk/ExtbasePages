@@ -60,7 +60,7 @@ class ShortcutTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
     $this->inject( $this->subject, 'contentRepository', $contentRepositoryMock );
     $this->inject( $this->subject, 'recordsStorage', new \TYPO3\CMS\Extbase\Persistence\ObjectStorage() );
-    $this->inject( $this->subject, 'records', array('tt_content_101', 'tt_content_131') );
+    $this->inject( $this->subject, 'records', 'tt_content_101,tt_content_131' );
 
     $zeroMock = $this->getMock('Rattazonk\Extbasepages\Domain\Model\Content');
     $contentRepositoryMock->expects($this->at(0))
