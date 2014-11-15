@@ -59,6 +59,9 @@ class Page
 	/** @var string **/
 	protected $doktype;
 
+	/** @var string **/
+	protected $layout;
+
 	/** @var int  **/
 	protected $startTime = 0;
 
@@ -189,6 +192,20 @@ class Page
 	 */
 	public function getDoktype() {
 		return $this->doktype;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function setLayout( $layout ) {
+		$this->layout = $layout;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLayout() {
+		return $this->layout;
 	}
 
 	/**

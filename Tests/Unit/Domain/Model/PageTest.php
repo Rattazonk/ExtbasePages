@@ -94,6 +94,13 @@ class PageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function getSetLayoyt() {
+		$this->_testGetterSetter( 'layout', 'fooBar' );
+	}
+
+	/**
 	 * Need the getter setter for other extensions, so I can test them implicitly
 	 *
 	 * @test
